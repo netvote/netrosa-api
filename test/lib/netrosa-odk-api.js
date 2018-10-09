@@ -16,8 +16,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const FORM_LIST_PATH = "formList";
-const SUBMISSION_PATH = "submission";
+const FORM_LIST_PATH   = "formList";
+const SUBMISSION_PATH  = "submission";
+const FORM_UPLOAD_PATH = "formUpload";
 
 /**
  * Constructor. Initialize a new NetRosa instance to manage XForms in aggregate server instance
@@ -61,6 +62,10 @@ class NetRosa {
             return this.odkRequest(path, 'GET', null);
         };
 
+        this.post = (path, postObj) => {
+            return this.odkRequest(path, 'POST', postObj);
+        };
+
         this.getFormsList = () => {
             return this.odkRequest(FORM_LIST_PATH, 'GET', null);
         };
@@ -70,15 +75,11 @@ class NetRosa {
             return this.odkRequest(formQuery, 'GET', null);
         };
 
-        this.post = (path, postObj) => {
-            return this.odkRequest(path, 'POST', postObj);
+        this.uploadForm = (xmlFile) => {
+            // let formQuery = `formXml?formId=${formId}`; //&readable=true`;
+            // return this.odkRequest(formQuery, 'GET', null);
         };
     }
 }
 
-//export const netRosaGet = netRosaGet;
-
-// module.exports = {
-//     netRosaGet: netRosaGet,
-//     // netvotePost: netvotePost
-// }
+export { NetRosa };

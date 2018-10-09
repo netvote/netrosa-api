@@ -2,9 +2,11 @@
 <html>
 
 <body>
-    <script src="../lib/netrosa-odk-api.js" type="text/javascript"></script>
-    <script>
+
+    <script type="module">
         "use strict";
+
+        import { NetRosa } from '../lib/netrosa-odk-api.js';
 
         // ---------------------------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------------
@@ -72,6 +74,22 @@
         //     });
 
 
+        // ---------------------------------------------------------------------------------------------
+        // Generic ODK GET
+        // ---------------------------------------------------------------------------------------------
+
+        // odk.get('formXml?formId=mysurvey')
+        //     .then(data => {
+        //         //Raw XML
+        //         document.write(`<h2>netRosa xForm</h2>`);
+        //         document.write(`<pre><xmp>${data}</xmp></pre>`);
+        //     }).catch(reason => {
+        //         alert('Fetch Failed: ' + reason.message);
+        //         console.log('Fetch Failed: ' + reason.message);
+        //     });
+
+
+
 
         // ---------------------------------------------------------------------------------------------
         // Utility Functions 
@@ -133,8 +151,9 @@
 
             return xformList;
         }
-
+        
     </script>
+
 </body>
 
 </html>
