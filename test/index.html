@@ -1,159 +1,220 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<link rel="stylesheet" type="text/css" href="netrosa-test.css">
+</head>
 
 <body>
+    <form action="http://odk.netvote.io/formUpload" method="post" id="form-id">
 
-    <script type="module">
-        "use strict";
+        <!-- Upload New XForm -->
+        <p>
+            </br>
+            <h4>Upload New ODK Aggregate XForm definition (xml file):</h4>
+            <input id="file-id" type="file" name="our-file" />
+            <input type="button" value="Upload" id="upload-button-id" />
+        </p>
 
-        import { NetRosa } from '../lib/netrosa-odk-api.js';
+        <!-- Form List Retrieval -->
+        <p>
+            </br>
+            <h4>Current ODK Aggregate XForms</h4>
+            <input type="button" value="Get Forms" id="flist-button-id" />
+        </p>
 
-        // ---------------------------------------------------------------------------------------------
-        // ---------------------------------------------------------------------------------------------
-        //
-        // NetRosa - ODK Aggregate Server Interface Test
-        // 
-        // ---------------------------------------------------------------------------------------------
-        //
-        // [SETTINGS]
-        //
-        //  username/password: 
-        //      This is your Aggregate account credentials with Form Manager or greater capabilities. 
-        //      The account type in Aggregate has to be ODK, not Google. 
-        //      You may leave these blank if your Aggregate instance allows anonymous form uploading.
-        //
-        //  server:
-        //      ODK Aggregate Instance URI
-        //
-        // ---------------------------------------------------------------------------------------------
-        let requestSettings = {
-            username: 'keith',
-            password: 'D@t@m@n18',
-            server: 'http://odk.netvote.io'
-        };
+        <!-- <p><label>Aggregate Server: <input name="other-field" type="text" id="other-field-id" /></label></p> -->
 
-        //Instantiate NetRosa w/ ODK Settings
-        let odk = new NetRosa(requestSettings);
+        <!-- submit button -->
+        <!-- <p><input type="submit" value="Submit" /></p> -->
 
+        <script type="module">
+            "use strict";
 
-        // ---------------------------------------------------------------------------------------------
-        // Get list of xForms (http://odk.netvote.io/formList)
-        // ODK Endpoint - formlist
-        // ---------------------------------------------------------------------------------------------
-        let xformList = [{}];
+            import { NetRosa } from '../lib/netrosa-odk-api.js';
 
-        odk.getFormsList()
-            .then(data => {
-                //Raw XML
-                alert('Response data: ' + data);
+            // ---------------------------------------------------------------------------------------------
+            // ---------------------------------------------------------------------------------------------
+            //
+            // NetRosa - ODK Aggregate Server Interface Test
+            // 
+            // ---------------------------------------------------------------------------------------------
+            //
+            // [SETTINGS]
+            //
+            //  username/password: 
+            //      This is your Aggregate account credentials with Form Manager or greater capabilities. 
+            //      The account type in Aggregate has to be ODK, not Google. 
+            //      You may leave these blank if your Aggregate instance allows anonymous form uploading.
+            //
+            //  server:
+            //      ODK Aggregate Instance URI
+            //
+            // ---------------------------------------------------------------------------------------------
+            let requestSettings = {
+                username: 'keith',
+                password: 'D@t@m@n18',
+                server: 'http://odk.netvote.io'
+            };
 
-                //Formatted JSON
-                xformList = getFormListObjects(data);
-                outputXformsList(xformList);
-            }).catch(reason => {
-                alert('Fetch Failed: ' + reason.message);
-                console.log('Fetch Failed: ' + reason.message);
-            });
+            //Instantiate NetRosa w/ ODK Settings
+            let odk = new NetRosa(requestSettings);
 
+            // Form Initialization
+            initFormUpload();
+            initGetFormList();
 
-        // ---------------------------------------------------------------------------------------------
-        // Get an xForm by form Id (https://odk.netvote.io/formXml?formId=${formId})
-        // ODK Endpoint - formId
-        // ---------------------------------------------------------------------------------------------
+            // ---------------------------------------------------------------------------------------------
+            // Upload an xForm file (http://odk.netvote.io/formUpload)
+            // ODK Endpoint - formUpload
+            // ---------------------------------------------------------------------------------------------
+            function initFormUpload() {
+                var uploadBtn = document.getElementById('upload-button-id');
 
-        // let formId = 'build_KM-NEW-Form_1538503436';//mysurvey
+                uploadBtn.onclick = function () {
+                    var fileInput = document.getElementById('file-id');
+                    var file = fileInput.files[0];
 
-        // odk.getFormById(formId)
-        //     .then(data => {
-        //         //Raw XML
-        //         document.write(`<h2>netRosa xForm</h2>`);
-        //         document.write(`<pre><xmp>${data}</xmp></pre>`);
-        //     }).catch(reason => {
-        //         alert('Fetch Failed: ' + reason.message);
-        //         console.log('Fetch Failed: ' + reason.message);
-        //     });
+                    odk.uploadForm(file)
+                        .then(data => {
+                            //Raw XML
+                            alert('Response data: ' + data);
+                            // result.innerHTML = '<p>Server Response:</p><pre>' + data + '</pre>';
+                            result.innerHTML = '</br><pre>' + data + '</pre></br></br>';
 
+                        }).catch(reason => {
+                            alert('Fetch Failed: ' + reason.message);
+                            console.log('Fetch Failed: ' + reason.message);
+                        });
 
-        // ---------------------------------------------------------------------------------------------
-        // Generic ODK GET
-        // ---------------------------------------------------------------------------------------------
-
-        // odk.get('formXml?formId=mysurvey')
-        //     .then(data => {
-        //         //Raw XML
-        //         document.write(`<h2>netRosa xForm</h2>`);
-        //         document.write(`<pre><xmp>${data}</xmp></pre>`);
-        //     }).catch(reason => {
-        //         alert('Fetch Failed: ' + reason.message);
-        //         console.log('Fetch Failed: ' + reason.message);
-        //     });
-
-
-
-
-        // ---------------------------------------------------------------------------------------------
-        // Utility Functions 
-        // ---------------------------------------------------------------------------------------------
-        function printObj(theObj) {
-            if (theObj.constructor == Array || theObj.constructor == Object) {
-                document.write("<ul>")
-                for (var p in theObj) {
-                    if (theObj[p].constructor == Array || theObj[p].constructor == Object) {
-                        document.write("<li>[" + p + "] => " + typeof (theObj) + "</li>");
-                        document.write("<ul>")
-                        print_r(theObj[p]);
-                        document.write("</ul>")
-                    } else {
-                        document.write("<li>[" + p + "] => " + theObj[p] + "</li>");
-                    }
+                    // Avoid normal form submission
+                    return false;
                 }
-                document.write("</ul>")
-            }
-        }
-
-        function outputXformsList(xformsList) {
-            xformsList.forEach(value => {
-                document.write(`<h2>[${value.name}]</h2>`);
-                printObj(value);
-            });
-        }
-
-
-        function getFormListObjects(xml) {
-            let parser = new DOMParser();
-            let xmlDoc = parser.parseFromString(xml, "text/xml");
-            let x = xmlDoc.getElementsByTagName('xform');
-            var xformList = [];
-
-            for (let i = 0; i < x.length; i++) {
-                let xform = {};
-
-                //Form ID
-                xform.id = x[i].children[0].textContent;
-
-                //Form Name
-                xform.name = x[i].children[1].textContent;
-
-                //MajorMinorVersion
-                xform.majminver = x[i].children[2].textContent;
-
-                //version
-                xform.version = x[i].children[3].textContent;
-
-                //hash
-                xform.hash = x[i].children[4].textContent;
-
-                //Download URL
-                xform.url = x[i].children[5].textContent;
-
-                xformList.push(xform);
             }
 
-            return xformList;
-        }
-        
-    </script>
+            // ---------------------------------------------------------------------------------------------
+            // Get list of xForms (http://odk.netvote.io/formList)
+            // ODK Endpoint - formlist
+            // ---------------------------------------------------------------------------------------------
+            function initGetFormList() {
+                var formListBtn = document.getElementById('flist-button-id');
 
+                formListBtn.onclick = function () {
+                    let xformList = [{}];
+
+                    odk.getFormsList()
+                        .then(data => {
+                            //Raw XML
+                            alert('Response data: ' + data);
+
+                            //Convert to Array for easy manipulation
+                            xformList = getFormListObjects(data);
+
+                            // result.innerHTML = `<p>Server Response:</p><pre><xmp>${data}</xmp></pre>`;
+                            
+                            //Formatted w/ Download URLs
+                            outputXformsList(xformList);
+                        }).catch(reason => {
+                            alert('Fetch Failed: ' + reason.message);
+                            console.log('Fetch Failed: ' + reason.message);
+                        });
+
+                    // Avoid normal form submission
+                    return false;
+                }
+            }
+
+            // ---------------------------------------------------------------------------------------------
+            // Get an xForm by form Id (https://odk.netvote.io/formXml?formId=${formId})
+            // ODK Endpoint - formId
+            // ---------------------------------------------------------------------------------------------
+            // let formId = 'build_KM-NEW-Form_1538503436';//mysurvey
+
+            // odk.getFormById(formId)
+            //     .then(data => {
+            //         //Raw XML
+            //         document.write(`<h2>netRosa xForm</h2>`);
+            //         document.write(`<pre><xmp>${data}</xmp></pre>`);
+            //     }).catch(reason => {
+            //         alert('Fetch Failed: ' + reason.message);
+            //         console.log('Fetch Failed: ' + reason.message);
+            //     });
+
+
+            // ---------------------------------------------------------------------------------------------
+            // Generic ODK GET
+            // ---------------------------------------------------------------------------------------------
+            // odk.get('formXml?formId=mysurvey')
+            //     .then(data => {
+            //         //Raw XML
+            //         document.write(`<h2>netRosa xForm</h2>`);
+            //         document.write(`<pre><xmp>${data}</xmp></pre>`);
+            //     }).catch(reason => {
+            //         alert('Fetch Failed: ' + reason.message);
+            //         console.log('Fetch Failed: ' + reason.message);
+            //     });
+
+
+
+
+            // ---------------------------------------------------------------------------------------------
+            // Utility Functions 
+            // ---------------------------------------------------------------------------------------------
+            function outputXformsList(xformsList) {
+                let txt = '<h3>XForms List:</h3>';
+                xformsList.forEach(value => {
+                    txt += `[NAME: ${value.name}]\nID: ${value.id}\n`;
+                    txt += `<a href="${value.url}">Download Form</a></br></br>`;
+                });
+                result.innerHTML = '<pre>' + txt + '</pre></br>';
+            }
+
+            function getFormListObjects(xml) {
+                let parser = new DOMParser();
+                let xmlDoc = parser.parseFromString(xml, "text/xml");
+                let x = xmlDoc.getElementsByTagName('xform');
+                var xformList = [];
+
+                for (let i = 0; i < x.length; i++) {
+                    let xform = {};
+
+                    //Form ID
+                    xform.id = x[i].children[0].textContent;
+
+                    //Form Name
+                    xform.name = x[i].children[1].textContent;
+
+                    //MajorMinorVersion
+                    xform.majminver = x[i].children[2].textContent;
+
+                    //version
+                    xform.version = x[i].children[3].textContent;
+
+                    //hash
+                    xform.hash = x[i].children[4].textContent;
+
+                    //Download URL
+                    xform.url = x[i].children[5].textContent;
+
+                    xformList.push(xform);
+                }
+
+                return xformList;
+            }
+
+        </script>
+
+        <!-- Message Placeholders -->
+        <div class="background">
+            <div class="transbox">
+                <pre id="result"></pre>
+            </div>
+        </div>
+
+    </form>
+    <div class="footer">
+        <p>NetRosa ODK Test Harness</p>
+    </div>
 </body>
 
 </html>

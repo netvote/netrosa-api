@@ -16,8 +16,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const FORM_LIST_PATH   = "formList";
-const SUBMISSION_PATH  = "submission";
+const FORM_LIST_PATH = "formList";
+const SUBMISSION_PATH = "submission";
 const FORM_UPLOAD_PATH = "formUpload";
 
 /**
@@ -30,31 +30,36 @@ class NetRosa {
     constructor(settings) {
         this.username = settings.username;
         this.password = settings.password;
-        this.server   = settings.server;
+        this.server = settings.server;
 
         this.odkRequest = async (path, method, postObj) => {
             let URL = this.server + "/" + path;
             let encodedAuth = window.btoa(this.username + ":" + this.password); //base64
-          
+
             let reqHeaders = new Headers();
-            reqHeaders.append('Content-Type', 'text/xml; charset=utf-8');
             reqHeaders.append('X-OpenRosa-Version', '1.0');
             reqHeaders.append('Date', new Date().toUTCString());
-            reqHeaders.append('Authorization', ("Basic " + encodedAuth));
-            reqHeaders.append('Accept', 'application/json');
-          
+           
+            if (method == 'GET') {
+                console.log('ADDING GET HEADERS');
+                reqHeaders.append('Content-Type', 'text/xml; charset=utf-8');
+                reqHeaders.append('Authorization', ("Basic " + encodedAuth));
+                reqHeaders.append('Accept', 'application/json');
+            }
+
             let response = await fetch(URL, {
                 method,
                 credentials: 'omit',
                 //  mode: 'no-cors', //Returning opaque Response w/ no data!!!
                 mode: 'cors',
-                headers: reqHeaders
+                headers: reqHeaders,
+                body: postObj
             });
-          
+
             if (response.ok) {
                 return await response.text();
             }
-          
+
             throw new Error(response.status);
         };
 
@@ -76,8 +81,16 @@ class NetRosa {
         };
 
         this.uploadForm = (xmlFile) => {
-            // let formQuery = `formXml?formId=${formId}`; //&readable=true`;
-            // return this.odkRequest(formQuery, 'GET', null);
+            var formData = new FormData();
+            formData.append('form_def_file', xmlFile);
+            return this.odkRequest(FORM_UPLOAD_PATH, 'POST', formData);
+
+        };
+
+        this.uploadSubmissionForm = (xmlFile) => {
+            var formData = new FormData();
+            formData.append('form_def_file', xmlFile);
+            return this.odkRequest(SUBMISSION_PATH, 'POST', formData);
         };
     }
 }
