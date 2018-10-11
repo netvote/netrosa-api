@@ -17,8 +17,10 @@
 */
 
 const FORM_LIST_PATH = "formList";
-const SUBMISSION_PATH = "submission";
 const FORM_UPLOAD_PATH = "formUpload";
+const SUBMISSION_LIST_PATH = "view/submissionList";
+const SUBMISSION_PATH = "submission";
+
 
 /**
  * Constructor. Initialize a new NetRosa instance to manage XForms in aggregate server instance
@@ -41,7 +43,6 @@ class NetRosa {
             reqHeaders.append('Date', new Date().toUTCString());
            
             if (method == 'GET') {
-                console.log('ADDING GET HEADERS');
                 reqHeaders.append('Content-Type', 'text/xml; charset=utf-8');
                 reqHeaders.append('Authorization', ("Basic " + encodedAuth));
                 reqHeaders.append('Accept', 'application/json');
@@ -87,6 +88,11 @@ class NetRosa {
 
         };
 
+        this.getSubmissionListById = (formId) => {
+            let formQuery = `${SUBMISSION_LIST_PATH}?formId=${formId}`;
+            return this.odkRequest(formQuery, 'GET', null);
+        };
+        
         this.uploadSubmissionForm = (xmlFile) => {
             var formData = new FormData();
             formData.append('form_def_file', xmlFile);
