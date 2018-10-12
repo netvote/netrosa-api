@@ -62,6 +62,9 @@ export function initGetFormList(odk) {
                 //Convert to Array for easy manipulation
                 xformList = Utils.getFormListObjects(data);
 
+                //Add list of forms to dropdown
+                Utils.addFormsToDropdown(xformList);
+
                 //Raw results
                 // Utils.displayMessage(`<pre><xmp>${data}</xmp></pre>`);
 
@@ -92,7 +95,8 @@ export function initGetSubFormList(odk) {
                 //Raw XML
                 alert('Response data: ' + data);
 
-                Utils.displayModalMessage('SUBMISSIONS', data);
+                Utils.displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
+
                 //TODO
                 //Convert to Array for easy manipulation 
                 //submissionList = getFormListObjects(data);
@@ -122,18 +126,43 @@ export function initGetSubFormList(odk) {
 // Get an xForm by form Id (https://odk.netvote.io/formXml?formId=${formId})
 // ODK Endpoint - formId
 // ---------------------------------------------------------------------------------------------
-// let formId = 'build_KM-NEW-Form_1538503436';//mysurvey
+export function initGetForm(odk) {
 
-// odk.getFormById(formId)
-//     .then(data => {
-//         //Raw XML
-//         document.write(`<h2>netRosa xForm</h2>`);
-//         document.write(`<pre><xmp>${data}</xmp></pre>`);
-//     }).catch(reason => {
-//         alert('Fetch Failed: ' + reason.message);
-//         console.log('Fetch Failed: ' + reason.message);
-//     });
+    var getFormBtn = document.getElementById('getform-button-id');
 
+    getFormBtn.onclick = function () {
+
+        var selForm = document.getElementById("selForm");
+        var xFormId = selForm.value;
+
+        if (xFormId == "") {
+            //Load Forms List
+            odk.getFormsList()
+                .then(data => {
+                    //Convert to Array for easy manipulation
+                    let xformList = Utils.getFormListObjects(data);
+
+                    //Add list of forms to dropdown
+                    Utils.addFormsToDropdown(xformList);
+
+                    return;
+                }).catch(reason => { 
+                    alert('ERROR: Unable to load list of forms: ' + reason.message);
+                });
+        } else {
+            //Get xForm by Id
+            odk.getFormById(xFormId)
+                .then(data => {
+                    let url = odk.serverName + `/formXml?formId=${xFormId}`;
+                    let downloadLink = `<a href="${url}" style="color:lightblue;">${xFormId}</a>`;
+                    Utils.displayModalMessage(downloadLink, `<xmp>${data}</xmp>`);
+                }).catch(reason => {
+                    alert('Fetch Failed: ' + reason.message);
+                    console.log('Fetch Failed: ' + reason.message);
+                });
+        }
+    }
+}
 
 // ---------------------------------------------------------------------------------------------
 // Generic ODK GET

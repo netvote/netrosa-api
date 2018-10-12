@@ -26,8 +26,18 @@
         <!-- Form List Retrieval -->
         <p>
             </br>
-            <h4>Current ODK XForms</h4>
+            <h4>Current ODK XForms List</h4>
             <input type="button" value="Get Forms" id="flist-button-id" />
+        </p>
+
+        <!-- Download Blank Form -->
+        <p>
+            </br>
+            <h4>Get Blank XForm</h4>
+            <select id="selForm">
+                <option value="No Forms Loaded" disabled="disabled">No Forms Loaded</option>
+            </select>
+            <input type="button" value="Get Form" id="getform-button-id" />
         </p>
 
         <!-- Submission List Retrieval -->
@@ -36,6 +46,8 @@
             <h4>Current ODK Submissions</h4>
             <input type="button" value="Get Submissions" id="sublist-button-id" />
         </p>
+
+
 
         <script type="module">
             "use strict";
@@ -78,6 +90,7 @@
             FormHandlers.initFormUpload(odk);
             FormHandlers.initGetFormList(odk);
             FormHandlers.initGetSubFormList(odk);
+            FormHandlers.initGetForm(odk);
             initSaveSettings();
 
             // ---------------------------------------------------------------------------------------------

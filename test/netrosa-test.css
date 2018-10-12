@@ -24,11 +24,15 @@ h4 {
 }
 
 pre {
-    /* text-align: center;
-    white-space: pre-line; */
+    /* text-align: center; */
+    /* white-space: pre-line; */
     color: rgb(169, 159, 209);
   }
 
+xmp{ 
+    white-space:pre-wrap; 
+    word-wrap:break-word;
+}
   /* Style all input fields */
 input {
     /* width: 100%; */

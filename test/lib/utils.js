@@ -40,7 +40,7 @@ export function initModal() {
     }
 }
 
-export function displayModalMessage(title, msg, txtColor='light blue') {
+export function displayModalMessage(title, msg, txtColor = 'light blue') {
     initModal();
     modalresult.innerHTML = `<h2 style="color: grey">${title}</h2><pre style="color: ${txtColor}">${msg}</pre></br>`;
 }
@@ -95,4 +95,19 @@ export function getFormListObjects(xml) {
     }
 
     return xformList;
+}
+
+export function addFormsToDropdown(xformsList) {
+    let x = document.getElementById("selForm");
+
+    //Nuke current list
+    x.options.length = 0;
+
+    xformsList.forEach(value => {
+        let option = document.createElement("option");
+        option.text = value.name;
+        option.value = value.id;
+        x.add(option);
+    });
+    
 }

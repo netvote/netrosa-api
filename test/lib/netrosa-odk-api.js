@@ -21,13 +21,14 @@ const FORM_UPLOAD_PATH = "formUpload";
 const SUBMISSION_LIST_PATH = "view/submissionList";
 const SUBMISSION_PATH = "submission";
 
-
-/**
- * Constructor. Initialize a new NetRosa instance to manage XForms in aggregate server instance
- *
- * @object settings (username, password, aggregateServerURI)
- * @return Nothing.
- */
+// ---------------------------------------------------------------------------------------------
+// NetRosa - ODK Aggregate v1.0 API (OpenRosa 1.0 Compliant)
+//
+// Initialize a new NetRosa instance to manage XForms in aggregate server instance
+// 
+// @object settings (username, password, aggregateServerURI)
+// @return Nothing.
+// ---------------------------------------------------------------------------------------------
 class NetRosa {
     constructor(settings) {
         this.username = settings.username;
@@ -41,7 +42,7 @@ class NetRosa {
             let reqHeaders = new Headers();
             reqHeaders.append('X-OpenRosa-Version', '1.0');
             reqHeaders.append('Date', new Date().toUTCString());
-           
+
             if (method == 'GET') {
                 reqHeaders.append('Content-Type', 'text/xml; charset=utf-8');
                 reqHeaders.append('Authorization', ("Basic " + encodedAuth));
@@ -92,12 +93,16 @@ class NetRosa {
             let formQuery = `${SUBMISSION_LIST_PATH}?formId=${formId}`;
             return this.odkRequest(formQuery, 'GET', null);
         };
-        
+
         this.uploadSubmissionForm = (xmlFile) => {
             var formData = new FormData();
             formData.append('form_def_file', xmlFile);
             return this.odkRequest(SUBMISSION_PATH, 'POST', formData);
         };
+    }
+    
+    get serverName() {
+        return this.server;
     }
 }
 
