@@ -38,7 +38,7 @@ function initFormUpload() {
                 //Clear form data
                 document.getElementById("xforms-upload-id").reset();
             });
-      
+
         // Avoid normal form submission
         return false;
     }
@@ -56,19 +56,43 @@ function getFormList() {
     odk.getFormsList()
         .then(data => {
             //Raw XML
-            alert('Response data: ' + data);
+            // alert('Response data: ' + data);
 
             //Convert to Array for easy manipulation
             xformList = getFormListObjects(data);
 
-            //Add list of forms to dropdown
-            addFormsToDropdown(xformList);
-
             //Raw results
             // displayMessage(`<pre><xmp>${data}</xmp></pre>`);
 
-            //Formatted w/ Download URLs
-            outputXformsList(xformList);
+            //Generate Download Icon
+            var downloadIcon = function (cell, formatterParams) { //plain text value
+                return "<i class='fa fa-download'></i>";
+            };
+
+            var table = new Tabulator("#xforms-table", {
+                // height:"331px",
+                layout: "fitDataFill",
+                // layout: "fitColumns",
+                pagination: "local",
+                paginationSize: 10,
+                tooltipsHeader: false,
+                columns: [
+                    { formatter: downloadIcon, width: 40, align: "center", cellClick: function (e, cell) {downloadXForm(cell.getRow().getData().id);} },
+                    { title: "Name", field: "name", sorter: "string", width: 150 },
+                    { title: "Form Id", field: "id", sorter: "string", align: "left" },
+                    { title: "Version", field: "version", sorter: "number", width: 150 },
+                ],
+                rowClick: function (e, id, data, row) {
+                    // alert("Row " + id + " Clicked!!!!")
+                },
+                rowContext: function (e, id, data, row) {
+                    // alert("Row " + id + " Context Clicked!!!!")
+                },
+            });
+
+            //load sample data into the table
+            table.setData(xformList);
+            
         }).catch(reason => {
             displayError('ERROR: Fetch Failed - ' + reason.message);
             console.log('Fetch Failed: ' + reason.message);
@@ -105,8 +129,7 @@ function initGetSubFormList() {
                 //displayMessage(`<pre><xmp>${data}</xmp></pre>`);
                 //  result.innerHTML = `<pre>${data}</pre>`;
 
-                //Formatted w/ Download URLs
-                //outputXformsList(xformList);
+                
             }).catch(reason => {
                 displayError('ERROR:' + reason.message);
                 console.log('Fetch Failed: ' + reason.message);
@@ -121,43 +144,17 @@ function initGetSubFormList() {
 // Get an xForm by form Id (https://odk.netvote.io/formXml?formId=${formId})
 // ODK Endpoint - formId
 // ---------------------------------------------------------------------------------------------
-function initGetForm() {
+function downloadXForm(xFormId) {
 
-    var getFormBtn = document.getElementById('getform-button-id');
-
-    getFormBtn.onclick = function () {
-
-        var selForm = document.getElementById("selForm");
-        var xFormId = selForm.value;
-
-        if (xFormId == "") {
-            //Load Forms List
-            odk.getFormsList()
-                .then(data => {
-                    //Convert to Array for easy manipulation
-                    let xformList = getFormListObjects(data);
-
-                    //Add list of forms to dropdown
-                    addFormsToDropdown(xformList);
-
-                    return;
-                }).catch(reason => {
-                    displayError('ERROR: Unable to load list of forms: ' + reason.message);
-                });
-        } else {
-            //Get xForm by Id
-            odk.getFormById(xFormId)
-                .then(data => {
-                    //TODO: create json object of form
-                    let url = odk.serverName + `/formXml?formId=${xFormId}`;
-                    let downloadLink = `<a href="${url}" style="color:white;">${xFormId}</a>`;
-                    displayModalMessage(downloadLink, `<xmp>${data}</xmp>`);
-                }).catch(reason => {
-                    displayError('ERROR: Fetch Failed - ' + reason.message);
-                    console.log('Fetch Failed: ' + reason.message);
-                });
-        }
-    }
+    odk.getFormById(xFormId)
+    .then(data => {
+        let url = odk.serverName + `/formXml?formId=${xFormId}`;
+        let downloadLink = `<a href="${url}" style="color:white;">${xFormId}</a>`;
+        displayModalMessage(downloadLink, `<xmp>${data}</xmp>`);
+    }).catch(reason => {
+        displayError('ERROR: Fetch Failed - ' + reason.message);
+        console.log('Fetch Failed: ' + reason.message);
+    });
 }
 
 // ---------------------------------------------------------------------------------------------

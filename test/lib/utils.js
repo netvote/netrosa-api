@@ -18,7 +18,7 @@
 // ---------------------------------------------------------------------------------------------
 // Utility Functions 
 // ---------------------------------------------------------------------------------------------
- function initModal() {
+function initModal() {
     // Get the modal
     var modal = document.getElementById('Modal');
 
@@ -40,12 +40,12 @@
     }
 }
 
- function displayModalMessage(title, msg, txtColor = 'lightblue') {
+function displayModalMessage(title, msg, txtColor = 'lightblue') {
     initModal();
     modalresult.innerHTML = `<h2>${title}</h2><pre style="color: ${txtColor}">${msg}</pre></br>`;
 }
 
- function displayMessage(msg, color = 'lightgreen') {
+function displayMessage(msg, color = 'lightgreen') {
     initModal();
     modalresult.innerHTML = `</br><pre style="text-align: center; color: ${color}">` + msg + '</pre></br></br>';
 }
@@ -54,11 +54,11 @@ function displayError(msg) {
     displayMessage(msg, 'red');
 }
 
- function displayFooterURL(msg) {
+function displayFooterURL(msg) {
     footer.innerHTML = `<a href="${msg}" style="color:lightblue;">${msg}</a>`;
 }
 
- function outputXformsList(xformsList) {
+function outputXformsList(xformsList) {
     let txt = '';
     xformsList.forEach(value => {
         txt += `${value.name}\nID: ${value.id}\n`;
@@ -68,7 +68,7 @@ function displayError(msg) {
     displayModalMessage('CURRENT FORMS', txt);
 }
 
- function getFormListObjects(xml) {
+function getFormListObjects(xml) {
     let parser = new DOMParser();
     let xmlDoc = parser.parseFromString(xml, "text/xml");
     let x = xmlDoc.getElementsByTagName('xform');
@@ -99,21 +99,6 @@ function displayError(msg) {
     }
 
     return xformList;
-}
-
- function addFormsToDropdown(xformsList) {
-    let x = document.getElementById("selForm");
-
-    //Nuke current list
-    x.options.length = 0;
-
-    xformsList.forEach(value => {
-        let option = document.createElement("option");
-        option.text = value.name;
-        option.value = value.id;
-        x.add(option);
-    });
-    
 }
 
 function openPage(pageName) {
@@ -156,6 +141,6 @@ function clearAll() {
         navcontent[i].style.display = "none";
     }
 
-     //Clear form data
-     document.getElementById("xforms-upload-id").reset();
+    //Clear form data
+    document.getElementById("xforms-upload-id").reset();
 }
