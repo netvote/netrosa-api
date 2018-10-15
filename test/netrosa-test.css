@@ -4,7 +4,7 @@ body {
     background-repeat: no-repeat;
     background-position: 80% 10%;
     background-size: 100%;
-    font-size: 12px;
+    font-size: 13px;
     color: rgb(172, 200, 228);
 }
 
@@ -21,6 +21,10 @@ body {
 h4 {
     color: rgb(172, 200, 228);
     font-size: 14px;
+}
+
+h2 {
+    color:grey;
 }
 
 label {
@@ -83,8 +87,10 @@ input {
     /* w/ opacity */
     margin: auto;
     padding: 20px;
-    /* border: 1px solid #888; */
     width: 80%;
+    max-width: 80%;
+    max-height: 80%;
+    overflow: auto;
 }
 
 /* The Close Button */

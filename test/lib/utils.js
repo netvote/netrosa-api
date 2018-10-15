@@ -40,14 +40,18 @@
     }
 }
 
- function displayModalMessage(title, msg, txtColor = 'light blue') {
+ function displayModalMessage(title, msg, txtColor = 'lightblue') {
     initModal();
-    modalresult.innerHTML = `<h2 style="color: grey">${title}</h2><pre style="color: ${txtColor}">${msg}</pre></br>`;
+    modalresult.innerHTML = `<h2>${title}</h2><pre style="color: ${txtColor}">${msg}</pre></br>`;
 }
 
- function displayMessage(msg) {
+ function displayMessage(msg, color = 'lightgreen') {
     initModal();
-    modalresult.innerHTML = '</br><pre style="text-align: center; color: lightgreen">' + msg + '</pre></br></br>';
+    modalresult.innerHTML = `</br><pre style="text-align: center; color: ${color}">` + msg + '</pre></br></br>';
+}
+
+function displayError(msg) {
+    displayMessage(msg, 'red');
 }
 
  function displayFooterURL(msg) {

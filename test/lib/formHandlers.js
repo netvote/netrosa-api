@@ -29,14 +29,16 @@ function initFormUpload() {
         odk.uploadForm(file)
             .then(data => {
                 //Raw XML
-                alert('Response data: ' + data);
                 displayMessage(data);
 
             }).catch(reason => {
-                alert('Fetch Failed: ' + reason.message);
+                displayError('ERROR: Fetch Failed - ' + reason.message);
                 console.log('Fetch Failed: ' + reason.message);
+            }).finally(() => {
+                //Clear form data
+                document.getElementById("xforms-upload-id").reset();
             });
-
+      
         // Avoid normal form submission
         return false;
     }
@@ -48,9 +50,9 @@ function initFormUpload() {
 // ---------------------------------------------------------------------------------------------
 function getFormList() {
     let xformList = [{}];
-    
+
     clearAll();
-    
+
     odk.getFormsList()
         .then(data => {
             //Raw XML
@@ -68,7 +70,7 @@ function getFormList() {
             //Formatted w/ Download URLs
             outputXformsList(xformList);
         }).catch(reason => {
-            alert('Fetch Failed: ' + reason.message);
+            displayError('ERROR: Fetch Failed - ' + reason.message);
             console.log('Fetch Failed: ' + reason.message);
         });
 }
@@ -106,7 +108,7 @@ function initGetSubFormList() {
                 //Formatted w/ Download URLs
                 //outputXformsList(xformList);
             }).catch(reason => {
-                alert('Fetch Failed: ' + reason.message);
+                displayError('ERROR:' + reason.message);
                 console.log('Fetch Failed: ' + reason.message);
             });
 
@@ -140,17 +142,18 @@ function initGetForm() {
 
                     return;
                 }).catch(reason => {
-                    alert('ERROR: Unable to load list of forms: ' + reason.message);
+                    displayError('ERROR: Unable to load list of forms: ' + reason.message);
                 });
         } else {
             //Get xForm by Id
             odk.getFormById(xFormId)
                 .then(data => {
+                    //TODO: create json object of form
                     let url = odk.serverName + `/formXml?formId=${xFormId}`;
-                    let downloadLink = `<a href="${url}" style="color:lightblue;">${xFormId}</a>`;
+                    let downloadLink = `<a href="${url}" style="color:white;">${xFormId}</a>`;
                     displayModalMessage(downloadLink, `<xmp>${data}</xmp>`);
                 }).catch(reason => {
-                    alert('Fetch Failed: ' + reason.message);
+                    displayError('ERROR: Fetch Failed - ' + reason.message);
                     console.log('Fetch Failed: ' + reason.message);
                 });
         }
@@ -185,6 +188,7 @@ function saveServerSettings() {
     //Reconfigure NetRosa API 
     odk = new NetRosa(serverSettings);
 
+    //TODO: Save to session data
     displayMessage('Settings saved');
 }
 
@@ -197,6 +201,6 @@ function saveServerSettings() {
 //         document.write(`<h2>netRosa xForm</h2>`);
 //         document.write(`<pre><xmp>${data}</xmp></pre>`);
 //     }).catch(reason => {
-//         alert('Fetch Failed: ' + reason.message);
+//         displayError('ERROR: Fetch Failed - ' + reason.message);
 //         console.log('Fetch Failed: ' + reason.message);
 //     });
