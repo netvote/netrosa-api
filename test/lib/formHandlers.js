@@ -70,17 +70,21 @@ function getFormList() {
             };
 
             var table = new Tabulator("#xforms-table", {
-                // height:"331px",
-                layout: "fitDataFill",
-                // layout: "fitColumns",
+                height: "100%",
+                // layout: "fitDataFill",
+                layout: "fitColumns",
                 pagination: "local",
                 paginationSize: 10,
                 tooltipsHeader: false,
+                placeholder: "No Forms Available", //display message to user on empty table
+                initialSort: [
+                    { column: "name", dir: "asc" },
+                ],
                 columns: [
-                    { formatter: downloadIcon, width: 40, align: "center", cellClick: function (e, cell) {downloadXForm(cell.getRow().getData().id);} },
-                    { title: "Name", field: "name", sorter: "string", width: 150 },
-                    { title: "Form Id", field: "id", sorter: "string", align: "left" },
-                    { title: "Version", field: "version", sorter: "number", width: 150 },
+                    { formatter: downloadIcon, width: 10, align: "center", cellClick: function (e, cell) { downloadXForm(cell.getRow().getData().id); } },
+                    { title: "Name", field: "name", sorter: "string", headerFilter: "input" },
+                    { title: "Form Id", field: "id", sorter: "string", align: "left", headerFilter: "input" },
+                    { title: "Version", field: "version", sorter: "number", headerFilter: "input" },
                 ],
                 rowClick: function (e, id, data, row) {
                     // alert("Row " + id + " Clicked!!!!")
@@ -92,7 +96,7 @@ function getFormList() {
 
             //load sample data into the table
             table.setData(xformList);
-            
+
         }).catch(reason => {
             displayError('ERROR: Fetch Failed - ' + reason.message);
             console.log('Fetch Failed: ' + reason.message);
@@ -129,7 +133,7 @@ function initGetSubFormList() {
                 //displayMessage(`<pre><xmp>${data}</xmp></pre>`);
                 //  result.innerHTML = `<pre>${data}</pre>`;
 
-                
+
             }).catch(reason => {
                 displayError('ERROR:' + reason.message);
                 console.log('Fetch Failed: ' + reason.message);
@@ -147,14 +151,17 @@ function initGetSubFormList() {
 function downloadXForm(xFormId) {
 
     odk.getFormById(xFormId)
-    .then(data => {
-        let url = odk.serverName + `/formXml?formId=${xFormId}`;
-        let downloadLink = `<a href="${url}" style="color:white;">${xFormId}</a>`;
-        displayModalMessage(downloadLink, `<xmp>${data}</xmp>`);
-    }).catch(reason => {
-        displayError('ERROR: Fetch Failed - ' + reason.message);
-        console.log('Fetch Failed: ' + reason.message);
-    });
+        .then(data => {
+            let url = odk.serverName + `/formXml?formId=${xFormId}`;
+            // let downloadLink = `<a href="${url}" style="color:white;">${xFormId}</a>`;
+
+            let downloadLink = `<h2><a href="${url}" style="color:white;"><i class="fa fa-file-code-o fa-lg" aria-hidden="true" style="color: white"></i></a> ${xFormId}</h2>`;
+
+            displayModalMessage(downloadLink, `<xmp>${data}</xmp>`);
+        }).catch(reason => {
+            displayError('ERROR: Fetch Failed - ' + reason.message);
+            console.log('Fetch Failed: ' + reason.message);
+        });
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -187,6 +194,83 @@ function saveServerSettings() {
 
     //TODO: Save to session data
     displayMessage('Settings saved');
+}
+
+//custom max min header filter
+var minMaxFilterEditor = function (cell, onRendered, success, cancel, editorParams) {
+
+    var end;
+
+    var container = document.createElement("span");
+
+    //create and style inputs
+    var start = document.createElement("input");
+    start.setAttribute("type", "number");
+    start.setAttribute("placeholder", "Min");
+    start.setAttribute("min", 0);
+    start.setAttribute("max", 100);
+    start.style.padding = "4px";
+    start.style.width = "50%";
+    start.style.boxSizing = "border-box";
+
+    start.value = cell.getValue();
+
+    function buildValues() {
+        success({
+            start: start.value,
+            end: end.value,
+        });
+    }
+
+    function keypress(e) {
+        if (e.keyCode == 13) {
+            buildValues();
+        }
+
+        if (e.keyCode == 27) {
+            cancel();
+        }
+    }
+
+    end = start.cloneNode();
+
+    start.addEventListener("change", buildValues);
+    start.addEventListener("blur", buildValues);
+    start.addEventListener("keydown", keypress);
+
+    end.addEventListener("change", buildValues);
+    end.addEventListener("blur", buildValues);
+    end.addEventListener("keydown", keypress);
+
+
+    container.appendChild(start);
+    container.appendChild(end);
+
+    return container;
+}
+
+//custom max min filter function
+function minMaxFilterFunction(headerValue, rowValue, rowData, filterParams) {
+    //headerValue - the value of the header filter element
+    //rowValue - the value of the column in this row
+    //rowData - the data for the row being filtered
+    //filterParams - params object passed to the headerFilterFuncParams property
+
+    if (rowValue) {
+        if (headerValue.start != "") {
+            if (headerValue.end != "") {
+                return rowValue >= headerValue.start && rowValue <= headerValue.end;
+            } else {
+                return rowValue >= headerValue.start;
+            }
+        } else {
+            if (headerValue.end != "") {
+                return rowValue <= headerValue.end;
+            }
+        }
+    }
+
+    return false; //must return a boolean, true if it passes the filter.
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -33,6 +33,10 @@ body {
     color: rgb(97, 94, 138);
     text-align: center;
 }
+/* Icon Default Color */
+i {
+    color: lightblue;
+}
 
 h4 {
     color: rgb(172, 200, 228);
@@ -40,7 +44,7 @@ h4 {
 }
 
 h2 {
-    color: grey;
+    color: rgb(255, 255, 255);
 }
 
 label {

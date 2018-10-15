@@ -15,17 +15,17 @@
 
 <body onload="clearAll()"">
     <div class=" navbar">
-    <div class="dropdown">
-        <button class="dropbtn" onclick="hideDropdown()" id="dropButton">Forms
-            <i class="fa fa-caret-down"></i>
-        </button>
-        <div class="dropdown-content" id="formsMenuContents">
-            <a href="#" onclick="openPage('UploadForm')">Upload Form</a>
-            <a href="#" onclick="getFormList()">View/Download Forms</a>
+        <div class="dropdown">
+            <button class="dropbtn" onclick="hideDropdown()" id="dropButton"><i class="fa fa-file-text-o fa-lg"></i> Forms
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content" id="formsMenuContents">
+                <a href="#" onclick="openPage('UploadForm')"><i class="fa fa-cloud-upload" style="color: darkblue"></i> Upload Form</a>
+                <a href="#" onclick="getFormList()"><i class="fa fa-cloud-download" style="color: darkblue"></i> View/Download Forms</a>
+            </div>
         </div>
-    </div>
-    <a href="#" onclick="openPage('Submissions')">Submissions</a>
-    <a href="#" style="float:right" onclick="openPage('Settings')">Settings</a>
+        <a href="#" onclick="openPage('Submissions')"><i class="fa fa-file-text fa-lg"></i> Submissions</a>
+        <a href="#" style="float:right" onclick="openPage('Settings')"><i class="fa fa-cog fa-lg"></i><!--Settings--></a> 
     </div>
 
     <div id="Settings" class="navcontent">
