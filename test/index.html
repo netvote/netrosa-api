@@ -12,18 +12,18 @@
 
 <body onload="clearAll()"">
     <div class=" navbar">
-        <div class="dropdown">
-            <button class="dropbtn" onclick="hideDropdown()" id="dropButton">Forms
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content" id="formsMenuContents">
-                <a href="#" onclick="openPage('UploadForm')">Upload Form</a>
-                <a href="#" onclick="openPage('DownloadForm')">View/Download Form</a>
-                <a href="#" onclick="getFormList()">Get Forms List</a>
-            </div>
+    <div class="dropdown">
+        <button class="dropbtn" onclick="hideDropdown()" id="dropButton">Forms
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content" id="formsMenuContents">
+            <a href="#" onclick="openPage('UploadForm')">Upload Form</a>
+            <a href="#" onclick="openPage('DownloadForm')">View/Download Form</a>
+            <a href="#" onclick="getFormList()">Get Forms List</a>
         </div>
-        <a href="#" onclick="openPage('Submissions')">Submissions</a>
-        <a href="#" style="float:right" onclick="openPage('Settings')">Settings</a>
+    </div>
+    <a href="#" onclick="openPage('Submissions')">Submissions</a>
+    <a href="#" style="float:right" onclick="openPage('Settings')">Settings</a>
     </div>
 
     <div id="Settings" class="navcontent">
@@ -42,7 +42,7 @@
             <p>
                 <!-- Upload New XForm -->
                 <h4>Upload New ODK XForm definition (xml file):</h4>
-                <input id="file-id" type="file" name="our-file" />
+                <input id="file-id" type="file" name="our-file" onfocus="this.value=''" />
                 <input type="button" value="Upload" id="upload-button-id" />
             </p>
         </form>
@@ -53,8 +53,8 @@
             <p>
                 <!-- Download Blank Form -->
                 <label>Choose Form <select id="selForm">
-                    <option value="No Forms Loaded" disabled="disabled">No Forms Loaded</option>
-                </select></label>
+                        <option value="No Forms Loaded" disabled="disabled">No Forms Loaded</option>
+                    </select></label>
                 <input type="button" value="Get Form" id="getform-button-id" />
             </p>
         </form>
@@ -78,13 +78,12 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <pre id="modalresult"></pre>
-            </pre>
         </div>
     </div>
 
     <div class="footer">
-            <p id="footer">Unconfigured NetRosa ODK Test Harness</p>
-        </div>
+        <p id="footer">Unconfigured NetRosa ODK Test Harness</p>
+    </div>
 
     <script>
         "use strict";

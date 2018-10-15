@@ -155,4 +155,7 @@ function clearAll() {
     for (i = 0; i < navcontent.length; i++) {
         navcontent[i].style.display = "none";
     }
+
+     //Clear form data
+     document.getElementById("xforms-upload-id").reset();
 }
