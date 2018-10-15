@@ -15,13 +15,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Utils from '../lib/utils.js';
-
 // ---------------------------------------------------------------------------------------------
 // Upload an xForm file (http://odk.netvote.io/formUpload)
 // ODK Endpoint - formUpload
 // ---------------------------------------------------------------------------------------------
-export function initFormUpload(odk) {
+function initFormUpload() {
     var uploadBtn = document.getElementById('upload-button-id');
 
     uploadBtn.onclick = function () {
@@ -32,7 +30,7 @@ export function initFormUpload(odk) {
             .then(data => {
                 //Raw XML
                 alert('Response data: ' + data);
-                Utils.displayMessage(data);
+                displayMessage(data);
 
             }).catch(reason => {
                 alert('Fetch Failed: ' + reason.message);
@@ -48,43 +46,38 @@ export function initFormUpload(odk) {
 // Get list of xForms (http://odk.netvote.io/formList)
 // ODK Endpoint - formlist
 // ---------------------------------------------------------------------------------------------
-export function initGetFormList(odk) {
-    var formListBtn = document.getElementById('flist-button-id');
+function getFormList() {
+    let xformList = [{}];
+    
+    clearAll();
+    
+    odk.getFormsList()
+        .then(data => {
+            //Raw XML
+            alert('Response data: ' + data);
 
-    formListBtn.onclick = function () {
-        let xformList = [{}];
+            //Convert to Array for easy manipulation
+            xformList = getFormListObjects(data);
 
-        odk.getFormsList()
-            .then(data => {
-                //Raw XML
-                alert('Response data: ' + data);
+            //Add list of forms to dropdown
+            addFormsToDropdown(xformList);
 
-                //Convert to Array for easy manipulation
-                xformList = Utils.getFormListObjects(data);
+            //Raw results
+            // displayMessage(`<pre><xmp>${data}</xmp></pre>`);
 
-                //Add list of forms to dropdown
-                Utils.addFormsToDropdown(xformList);
-
-                //Raw results
-                // Utils.displayMessage(`<pre><xmp>${data}</xmp></pre>`);
-
-                //Formatted w/ Download URLs
-                Utils.outputXformsList(xformList);
-            }).catch(reason => {
-                alert('Fetch Failed: ' + reason.message);
-                console.log('Fetch Failed: ' + reason.message);
-            });
-
-        // Avoid normal form submission
-        return false;
-    }
+            //Formatted w/ Download URLs
+            outputXformsList(xformList);
+        }).catch(reason => {
+            alert('Fetch Failed: ' + reason.message);
+            console.log('Fetch Failed: ' + reason.message);
+        });
 }
 
 // ---------------------------------------------------------------------------------------------
 // Get Submissions List for a form (http://odk.netvote.io/view/submissionList)
 // ODK Endpoint - /view/submissionList
 // ---------------------------------------------------------------------------------------------
-export function initGetSubFormList(odk) {
+function initGetSubFormList() {
     var subsListBtn = document.getElementById('sublist-button-id');
 
     subsListBtn.onclick = function () {
@@ -95,7 +88,7 @@ export function initGetSubFormList(odk) {
                 //Raw XML
                 alert('Response data: ' + data);
 
-                Utils.displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
+                displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
 
                 //TODO
                 //Convert to Array for easy manipulation 
@@ -126,7 +119,7 @@ export function initGetSubFormList(odk) {
 // Get an xForm by form Id (https://odk.netvote.io/formXml?formId=${formId})
 // ODK Endpoint - formId
 // ---------------------------------------------------------------------------------------------
-export function initGetForm(odk) {
+function initGetForm() {
 
     var getFormBtn = document.getElementById('getform-button-id');
 
@@ -140,13 +133,13 @@ export function initGetForm(odk) {
             odk.getFormsList()
                 .then(data => {
                     //Convert to Array for easy manipulation
-                    let xformList = Utils.getFormListObjects(data);
+                    let xformList = getFormListObjects(data);
 
                     //Add list of forms to dropdown
-                    Utils.addFormsToDropdown(xformList);
+                    addFormsToDropdown(xformList);
 
                     return;
-                }).catch(reason => { 
+                }).catch(reason => {
                     alert('ERROR: Unable to load list of forms: ' + reason.message);
                 });
         } else {
@@ -155,13 +148,44 @@ export function initGetForm(odk) {
                 .then(data => {
                     let url = odk.serverName + `/formXml?formId=${xFormId}`;
                     let downloadLink = `<a href="${url}" style="color:lightblue;">${xFormId}</a>`;
-                    Utils.displayModalMessage(downloadLink, `<xmp>${data}</xmp>`);
+                    displayModalMessage(downloadLink, `<xmp>${data}</xmp>`);
                 }).catch(reason => {
                     alert('Fetch Failed: ' + reason.message);
                     console.log('Fetch Failed: ' + reason.message);
                 });
         }
     }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Save/Update Aggregate Server Settings
+// ---------------------------------------------------------------------------------------------
+function initSaveSettings() {
+    var saveButton = document.getElementById("save-button-id");
+
+    saveButton.onclick = function () {
+        saveServerSettings();
+
+        // Avoid normal form submission
+        return false;
+    }
+}
+
+function saveServerSettings() {
+
+    let serverSettings = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        server: document.getElementById("server").value
+    };
+
+    //Display Aggregate Server - footer
+    displayFooterURL(`${serverSettings.username} - ${serverSettings.password} - ${serverSettings.server}`);
+
+    //Reconfigure NetRosa API 
+    odk = new NetRosa(serverSettings);
+
+    displayMessage('Settings saved');
 }
 
 // ---------------------------------------------------------------------------------------------

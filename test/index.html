@@ -3,140 +3,128 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="netrosa-test.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="./lib/netrosa-odk-api.js"></script>
+    <script type="text/javascript" src="./lib/utils.js"></script>
+    <script type="text/javascript" src="./lib/formHandlers.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body>
-    <form id="form-id">
-
-        <!-- Aggregate Server Settings -->
-        <h4>Server Settings</h4>
-        <label>User: <input type="text" id="username" name="username"></label>
-        <label> Password: <input type="password" id="password" name="password"></label>
-        <label>Server: <input type="url" id="server" name="server" value="http://odk.netvote.io"></label>
-        <input type="button" value="Save" id="save-button-id" />
-
-        <!-- Upload New XForm -->
-        <p>
-            </br>
-            <h4>Upload New ODK XForm definition (xml file):</h4>
-            <input id="file-id" type="file" name="our-file" />
-            <input type="button" value="Upload" id="upload-button-id" />
-        </p>
-
-        <!-- Form List Retrieval -->
-        <p>
-            </br>
-            <h4>Current ODK XForms List</h4>
-            <input type="button" value="Get Forms" id="flist-button-id" />
-        </p>
-
-        <!-- Download Blank Form -->
-        <p>
-            </br>
-            <h4>Get Blank XForm</h4>
-            <select id="selForm">
-                <option value="No Forms Loaded" disabled="disabled">No Forms Loaded</option>
-            </select>
-            <input type="button" value="Get Form" id="getform-button-id" />
-        </p>
-
-        <!-- Submission List Retrieval -->
-        <p>
-            </br>
-            <h4>Current ODK Submissions</h4>
-            <input type="button" value="Get Submissions" id="sublist-button-id" />
-        </p>
-
-
-
-        <script type="module">
-            "use strict";
-
-            import { NetRosa } from '../lib/netrosa-odk-api.js';
-            import * as Utils from '../lib/utils.js';
-            import * as FormHandlers from '../lib/formHandlers.js';
-
-            // // ---------------------------------------------------------------------------------------------
-            // // ---------------------------------------------------------------------------------------------
-            // //
-            // // NetRosa - ODK Aggregate Server Interface Test
-            // // 
-            // // ---------------------------------------------------------------------------------------------
-            // //
-            // // [REQUIRED SETTINGS]
-            // //
-            // //  username/password: 
-            // //      This is your Aggregate account credentials with Form Manager or greater capabilities. 
-            // //      The account type in Aggregate has to be ODK, not Google. 
-            // //      You may leave these blank if your Aggregate instance allows anonymous form uploading.
-            // //
-            // //  server:
-            // //      ODK Aggregate Instance URI
-            // //
-            // // ---------------------------------------------------------------------------------------------
-            // //ODK Default Settings
-            let serverSettings = {
-                username: 'keith',
-                password: 'D@t@m@n18',
-                server: 'http://odk.netvote.io'
-            };
-
-            // //Instantiate NetRosa w/ ODK Default Settings
-            let odk = new NetRosa(serverSettings);
-
-            // ---------------------------------------------------------------------------------------------
-            // Setup/Initialize Form Listeners
-            // ---------------------------------------------------------------------------------------------
-            FormHandlers.initFormUpload(odk);
-            FormHandlers.initGetFormList(odk);
-            FormHandlers.initGetSubFormList(odk);
-            FormHandlers.initGetForm(odk);
-            initSaveSettings();
-
-            // ---------------------------------------------------------------------------------------------
-            // Save/Update Aggregate Server Settings
-            // ---------------------------------------------------------------------------------------------
-            export function initSaveSettings() {
-                var saveButton = document.getElementById("save-button-id");
-
-                saveButton.onclick = function () {
-
-                    let serverSettings = {
-                        username: document.getElementById("username").value,
-                        password: document.getElementById("password").value,
-                        server: document.getElementById("server").value
-                    };
-
-                    //Display Aggregate Server - footer
-                    Utils.displayFooterURL(`${serverSettings.server}`);
-
-                    //Reconfigure NetRosa API 
-                    odk = new NetRosa(serverSettings);
-
-                    //Re-Init Handlers
-                    FormHandlers.initFormUpload(odk);
-                    FormHandlers.initGetFormList(odk);
-                    FormHandlers.initGetSubFormList(odk);
-
-                    Utils.displayMessage('Settings saved');
-
-                    // Avoid normal form submission
-                    return false;
-                }
-            }
-        </script>
-
-        <!-- Modal Results-->
-        <div id="Modal" class="modal">
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <pre id="modalresult"></pre>
-                </pre>
+<body onload="clearAll()"">
+    <div class=" navbar">
+        <div class="dropdown">
+            <button class="dropbtn" onclick="hideDropdown()" id="dropButton">Forms
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content" id="formsMenuContents">
+                <a href="#" onclick="openPage('UploadForm')">Upload Form</a>
+                <a href="#" onclick="openPage('DownloadForm')">View/Download Form</a>
+                <a href="#" onclick="getFormList()">Get Forms List</a>
             </div>
         </div>
+        <a href="#" onclick="openPage('Submissions')">Submissions</a>
+        <a href="#" style="float:right" onclick="openPage('Settings')">Settings</a>
+        <a href="#" style="float:right" onclick="openPage('Blank')" id="defaultOpen"></a>
+    </div>
 
-    </form>
+    <div id="Settings" class="navcontent">
+        <h4>Server Settings</h4>
+        <form id="settings-id">
+            <!-- Aggregate Server Settings -->
+            <label>User: <input type="text" id="username" name="username" placeholder="Username"></label>
+            <label> Password: <input type="password" id="password" name="password" placeholder="Password"></label>
+            <label>Server: <input type="url" id="server" name="server" value="http://odk.netvote.io" placeholder="Server URL"></label>
+            <input type="button" value="Save" id="save-button-id" />
+        </form>
+    </div>
+
+    <div id="UploadForm" class="navcontent">
+        <form id="xforms-upload-id">
+            <p>
+                <!-- Upload New XForm -->
+                <h4>Upload New ODK XForm definition (xml file):</h4>
+                <input id="file-id" type="file" name="our-file" />
+                <input type="button" value="Upload" id="upload-button-id" />
+            </p>
+        </form>
+    </div>
+
+    <div id="DownloadForm" class="navcontent">
+        <form id="xforms-download-id">
+            <p>
+                <!-- Download Blank Form -->
+                <label>Choose Form <select id="selForm">
+                    <option value="No Forms Loaded" disabled="disabled">No Forms Loaded</option>
+                </select></label>
+                <input type="button" value="Get Form" id="getform-button-id" />
+            </p>
+        </form>
+    </div>
+
+    <div id="Submissions" class="navcontent">
+        <h4>Submissions</h4>
+        <!-- <p>ADD Description here</p> -->
+        <form id="submissions-id">
+            <!-- Submission List Retrieval -->
+            <p>
+                <h4>Current ODK Submissions</h4>
+                <input type="button" value="Get Submissions" id="sublist-button-id" />
+            </p>
+        </form>
+    </div>
+
+    <!-- Modal Results-->
+    <div id="Modal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre id="modalresult"></pre>
+            </pre>
+        </div>
+    </div>
+
+    <!-- <script type="module"> -->
+    <script>
+        "use strict";
+
+        // // ---------------------------------------------------------------------------------------------
+        // // ---------------------------------------------------------------------------------------------
+        // //
+        // // NetRosa - ODK Aggregate Server Interface Test
+        // // 
+        // // ---------------------------------------------------------------------------------------------
+        // //
+        // // [REQUIRED SETTINGS]
+        // //
+        // //  username/password: 
+        // //      This is your Aggregate account credentials with Form Manager or greater capabilities. 
+        // //      The account type in Aggregate has to be ODK, not Google. 
+        // //      You may leave these blank if your Aggregate instance allows anonymous form uploading.
+        // //
+        // //  server:
+        // //      ODK Aggregate Instance URI
+        // //
+        // // ---------------------------------------------------------------------------------------------
+        // //ODK Default Settings
+        let serverSettings = {
+            username: 'keith',
+            password: 'D@t@m@n18',
+            server: 'http://odk.netvote.io'
+        };
+
+        // //Instantiate NetRosa w/ ODK Default Settings
+        let odk = new NetRosa(serverSettings);
+
+        // ---------------------------------------------------------------------------------------------
+        // Setup/Initialize Form Listeners
+        // ---------------------------------------------------------------------------------------------
+        initFormUpload();
+        initGetSubFormList();
+        initGetForm();
+        initSaveSettings();
+
+    </script>
+
     <div class="footer">
         <p id="footer">Unconfigured NetRosa ODK Test Harness</p>
     </div>

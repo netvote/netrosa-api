@@ -2,7 +2,7 @@ body {
     background-color: rgb(40, 49, 61);
     background-image: url("./resources/splash.png");
     background-repeat: no-repeat;
-    background-position: 80% 20%; 
+    background-position: 80% 10%;
     background-size: 100%;
     font-size: 12px;
     color: rgb(172, 200, 228);
@@ -23,17 +23,24 @@ h4 {
     font-size: 14px;
 }
 
+label {
+    color: rgb(172, 200, 228);
+    font-size: 14px;
+}
+
 pre {
     /* text-align: center; */
     /* white-space: pre-line; */
     color: rgb(169, 159, 209);
-  }
-
-xmp{ 
-    white-space:pre-wrap; 
-    word-wrap:break-word;
 }
-  /* Style all input fields */
+
+xmp {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Style all input fields */
+
 input {
     /* width: 100%; */
     color: rgb(171, 204, 223);
@@ -47,22 +54,33 @@ input {
 }
 
 /* The Modal (background) */
+
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
 }
 
 /* Modal Content */
+
 .modal-content {
-    background-color: rgb(40, 49, 61,0.6);/* w/ opacity */
+    background-color: rgb(40, 49, 61, 0.6);
+    /* w/ opacity */
     margin: auto;
     padding: 20px;
     /* border: 1px solid #888; */
@@ -70,6 +88,7 @@ input {
 }
 
 /* The Close Button */
+
 .close {
     color: #a30606;
     float: right;
@@ -77,15 +96,89 @@ input {
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+.close:hover, .close:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
 }
 
 /* Style the submit button */
+
 /* input[type=submit] {
     background-color: #4CAF50;
     color: rgb(49, 198, 209);
 } */
+
+fieldset {
+    border: 2px solid rgb(3, 82, 134)
+}
+
+legend {
+    padding: 0.2em 0.5em;
+    border: 1px solid rgb(3, 82, 134);
+    color: rgb(3, 82, 134);
+    font-size: 90%;
+    text-align: left;
+}
+
+.navbar {
+    overflow: hidden;
+    background-color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar a {
+    float: left;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+.dropdown .dropbtn {
+    cursor: pointer;
+    font-size: 16px;    
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
+    background-color: rgb(67, 121, 165);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #bdb6b6;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.show {
+    display: block;
+}

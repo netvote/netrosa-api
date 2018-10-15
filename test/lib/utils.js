@@ -18,7 +18,7 @@
 // ---------------------------------------------------------------------------------------------
 // Utility Functions 
 // ---------------------------------------------------------------------------------------------
-export function initModal() {
+ function initModal() {
     // Get the modal
     var modal = document.getElementById('Modal');
 
@@ -40,21 +40,21 @@ export function initModal() {
     }
 }
 
-export function displayModalMessage(title, msg, txtColor = 'light blue') {
+ function displayModalMessage(title, msg, txtColor = 'light blue') {
     initModal();
     modalresult.innerHTML = `<h2 style="color: grey">${title}</h2><pre style="color: ${txtColor}">${msg}</pre></br>`;
 }
 
-export function displayMessage(msg) {
+ function displayMessage(msg) {
     initModal();
     modalresult.innerHTML = '</br><pre style="text-align: center; color: lightgreen">' + msg + '</pre></br></br>';
 }
 
-export function displayFooterURL(msg) {
+ function displayFooterURL(msg) {
     footer.innerHTML = `<a href="${msg}" style="color:lightblue;">${msg}</a>`;
 }
 
-export function outputXformsList(xformsList) {
+ function outputXformsList(xformsList) {
     let txt = '';
     xformsList.forEach(value => {
         txt += `${value.name}\nID: ${value.id}\n`;
@@ -64,7 +64,7 @@ export function outputXformsList(xformsList) {
     displayModalMessage('CURRENT FORMS', txt);
 }
 
-export function getFormListObjects(xml) {
+ function getFormListObjects(xml) {
     let parser = new DOMParser();
     let xmlDoc = parser.parseFromString(xml, "text/xml");
     let x = xmlDoc.getElementsByTagName('xform');
@@ -97,7 +97,7 @@ export function getFormListObjects(xml) {
     return xformList;
 }
 
-export function addFormsToDropdown(xformsList) {
+ function addFormsToDropdown(xformsList) {
     let x = document.getElementById("selForm");
 
     //Nuke current list
@@ -110,4 +110,45 @@ export function addFormsToDropdown(xformsList) {
         x.add(option);
     });
     
+}
+
+function openPage(pageName) {
+    // Hide all elements
+    clearAll();
+
+    // Show the specific nav content
+    document.getElementById(pageName).style.display = "block";
+
+    var formsMenuContents = document.getElementById("formsMenuContents");
+
+    if (formsMenuContents.classList.contains('show')) {
+        formsMenuContents.classList.remove('show');
+    }
+}
+
+// When the user clicks on the button, 
+// toggle between hiding and showing the forms dropdown content
+function hideDropdown() {
+    document.getElementById("formsMenuContents").classList.toggle("show");
+}
+
+// Close the forms dropdown if the user clicks outside of it
+document.onclick = function (e) {
+    if (!e.target.matches('.dropbtn')) {
+        var formsMenuContents = document.getElementById("formsMenuContents");
+        if (formsMenuContents.classList.contains('show')) {
+            formsMenuContents.classList.remove('show');
+        }
+    }
+}
+
+function clearAll() {
+    // Hide all navcontents by default
+    let i, navcontent;
+
+    navcontent = document.getElementsByClassName("navcontent");
+
+    for (i = 0; i < navcontent.length; i++) {
+        navcontent[i].style.display = "none";
+    }
 }

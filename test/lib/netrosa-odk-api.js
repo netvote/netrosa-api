@@ -106,4 +106,4 @@ class NetRosa {
     }
 }
 
-export { NetRosa };
+// export { NetRosa };
