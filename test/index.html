@@ -2,6 +2,11 @@
 <html lang="en">
 
 <head>
+    <style type="text/css">
+        #container {
+            display: none;
+        }
+    </style>
     <link rel="stylesheet" type="text/css" href="netrosa-test.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript" src="./lib/netrosa-odk-api.js"></script>
@@ -20,78 +25,81 @@
 <body onload="clearAll()"">
     <div class=" navbar">
     <div class="dropdown">
-        <button class="dropbtn" onclick="hideDropdown()" id="dropButton"><i class="fa fa-file-text-o fa-lg"></i> Forms
+        <button class="dropbtn" onclick="hideDropdown()" id="dropButton"><i class="fa fa-file-text-o fa-lg"></i> XForms
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content" id="formsMenuContents">
-            <a href="#" data-izimodal-open="#modal-uploadForm"><i class="fa fa-cloud-upload" style="color: darkblue"></i>Upload Form</a>
-            <a href="#" onclick="getFormList()"><i class="fa fa-cloud-download" style="color: darkblue"></i>View/Download Forms</a>
+            <a href="#" data-izimodal-open="#modal-uploadForm"><i class="fa fa-cloud-upload dropdown-icon"></i> Upload
+                Blank XForm...</a>
+            <a href="#" onclick="getFormList()"><i class="fa fa-cloud-download dropdown-icon"></i> View/Download XForms</a>
         </div>
     </div>
     <!-- <a href="#" onclick="openPage('Submissions')"><i class="fa fa-file-text fa-lg"></i> Submissions</a> -->
-    <a href="#" onclick="displayError('COMING SOON - NOT YET IMPLEMENTED!')"><i class="fa fa-file-text fa-lg"></i> Submissions</a>
+    <a href="#" onclick="displayError('COMING SOON - NOT YET IMPLEMENTED!')"><i class="fa fa-file-text fa-lg"></i>
+        Submissions</a>
     <a href="#" style="float:right" data-izimodal-open="#modal-settings"><i class="fa fa-cog fa-lg"></i></a>
     </div>
 
-    <div id="modal-message"></div>
-    <div id="modal-alert"></div>
+    <div id="container">
+        <div id="modal-message"></div>
+        <div id="modal-alert"></div>
 
-    <div id="modal-settings" class="navcontent">
-        <section>
-            <div class="center">
-                <i class="fa fa-user" style="color: darkblue"></i> <input type="text" id="username" name="username"
-                    placeholder="Username">
-                <i class="fa fa-lock" style="color: darkblue"></i> <input type="password" id="password" name="password"
-                    placeholder="Password">
-                <i class="fa fa-server" style="color: darkblue"></i> <input type="url" id="server" name="server" value="http://odk.netvote.io"
-                    placeholder="Server URL">
-            </div>
-            <footer style="float:right">
-                </br>
-                </br>
-                <!-- <button class="button" data-iziModal-close>Cancel</button> -->
-                <button class="submit button">Save</button>
-            </footer>
-        </section>
+        <div id="modal-settings" class="navcontent">
+            <section>
+                <div class="center">
+                    <i class="fa fa-user settings-icons"></i> <input type="text" id="username" name="username"
+                        placeholder="Username">
+                    <i class="fa fa-lock settings-icons"></i> <input type="password" id="password" name="password"
+                        placeholder="Password">
+                    <i class="fa fa-server settings-icons"></i> <input type="url" id="server" name="server" value="http://odk.netvote.io"
+                        placeholder="Server URL">
+                </div>
+                <footer style="float:right">
+                    </br>
+                    </br>
+                    <!-- <button class="button" data-iziModal-close>Cancel</button> -->
+                    <button class="submit button">Save</button>
+                </footer>
+            </section>
+        </div>
+
+        <div id="modal-uploadForm" class="navcontent">
+            <section>
+                <div class="center">
+                    <h4>Upload New ODK XForm definition (xml file):</h4>
+                    <input id="file-id" type="file" name="our-file" onfocus="this.value=''" />
+                </div>
+                <footer style="float:right">
+                    </br>
+                    </br>
+                    <button class="submit button">Upload</button>
+                </footer>
+            </section>
+        </div>
+
+        <div id="modal-submissions" class="navcontent">
+            <section>
+                <div class="center">
+                    <h4>TODO - NOT IMPLEMENTED YET!</h4>
+                    <h4>Current ODK Submissions</h4>
+                    <!-- <input type="button" value="Get Submissions" id="sublist-button-id" /> -->
+                </div>
+                <footer style="float:right">
+                    </br>
+                    </br>
+                    <button class="submit button">Get</button>
+                </footer>
+            </section>
+        </div>
+
+        <!-- Table Results-->
+        </br></br>
+        <div id="xforms-table" class="navcontent"></div>
+
+        <div class="footer">
+            <p id="footer">Unconfigured NetRosa ODK Test Harness</p>
+        </div>
     </div>
-
-    <div id="modal-uploadForm" class="navcontent">
-        <section>
-            <div class="center">
-                <h4>Upload New ODK XForm definition (xml file):</h4>
-                <input id="file-id" type="file" name="our-file" onfocus="this.value=''" />
-            </div>
-            <footer style="float:right">
-                </br>
-                </br>
-                <button class="submit button">Upload</button>
-            </footer>
-        </section>
-    </div>
-
-    <div id="modal-submissions" class="navcontent">
-        <section>
-            <div class="center">
-                <h4>TODO - NOT IMPLEMENTED YET!</h4>
-                <h4>Current ODK Submissions</h4>
-                <!-- <input type="button" value="Get Submissions" id="sublist-button-id" /> -->
-            </div>
-            <footer style="float:right">
-                </br>
-                </br>
-                <button class="submit button">Get</button>
-            </footer>
-        </section>
-    </div>
-
-    <!-- Table Results-->
-    </br></br>
-    <div id="xforms-table" class="navcontent"></div>
-
-    <div class="footer">
-        <p id="footer">Unconfigured NetRosa ODK Test Harness</p>
-    </div>
-
     <script>
         "use strict";
 
@@ -128,7 +136,8 @@
         // ---------------------------------------------------------------------------------------------
         initFormUpload();
         initSaveSettings();
-
+        displayContainer();
+        
     </script>
 
 </body>

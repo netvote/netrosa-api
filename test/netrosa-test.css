@@ -40,6 +40,10 @@ i {
     color: lightblue;
 }
 
+.settings-icons {
+    color: darkblue;
+}
+
 h4 {
     color: rgb(17, 56, 95);
     font-size: 14px;
@@ -89,6 +93,7 @@ input::placeholder {
 }
 
 /* Buttons styles start */
+
 .button {
     border-top: 1px solid #96d1f8;
     background: #65a9d7;
@@ -101,41 +106,37 @@ input::placeholder {
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     border-radius: 8px;
-    -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-    -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-    box-shadow: rgba(0,0,0,1) 0 1px 0;
-    text-shadow: rgba(0,0,0,.4) 0 1px 0;
+    -webkit-box-shadow: rgba(0, 0, 0, 1) 0 1px 0;
+    -moz-box-shadow: rgba(0, 0, 0, 1) 0 1px 0;
+    box-shadow: rgba(0, 0, 0, 1) 0 1px 0;
+    text-shadow: rgba(0, 0, 0, .4) 0 1px 0;
     color: white;
     font-size: 13px;
     font-family: Helvetica, Arial, Sans-Serif;
     text-decoration: none;
     vertical-align: middle;
-    }
- .button:hover {
+}
+
+.button:hover {
     border-top-color: #28597a;
     background: #28597a;
     color: #ccc;
-    }
- .button:active {
+}
+
+.button:active {
     border-top-color: #1b435e;
     background: #1b435e;
-    }
+}
 
-    input.button {
-        background-color: #660099;
-        color: white;
-        font-family: "trebuchet ms", arial, sans-serif;
-        border: 1px solid black;
-        font-style: italic;
-    }
+input.button {
+    background-color: #660099;
+    color: white;
+    font-family: "trebuchet ms", arial, sans-serif;
+    border: 1px solid black;
+    font-style: italic;
+}
+
 /* Button styles end */
-
-
-
-
-
-
-
 
 .navbar {
     overflow: hidden;
@@ -145,7 +146,7 @@ input::placeholder {
 
 .navbar a {
     float: left;
-    font-size: 16px;
+    font-size: 14px;
     color: white;
     text-align: center;
     padding: 14px 16px;
@@ -159,7 +160,7 @@ input::placeholder {
 
 .dropdown .dropbtn {
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     border: none;
     outline: none;
     color: white;
@@ -170,13 +171,14 @@ input::placeholder {
 }
 
 .navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
-    background-color: rgb(67, 121, 165);
+    background-color: rgba(67, 121, 165, 0.26);
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #bdb6b6;
+    background-color: #333;
+    /* #bdb6b6; */
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
@@ -184,7 +186,8 @@ input::placeholder {
 
 .dropdown-content a {
     float: none;
-    color: black;
+    color: white;
+    /* black; */
     padding: 12px 16px;
     text-decoration: none;
     display: block;
@@ -192,7 +195,12 @@ input::placeholder {
 }
 
 .dropdown-content a:hover {
-    background-color: #ddd;
+    background-color: rgba(67, 121, 165, 0.26);
+    /* #ddd; */
+}
+
+.dropdown-icon {
+    color: rgba(205, 205, 247, 0.548);
 }
 
 .show {

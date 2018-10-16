@@ -30,6 +30,13 @@ function displaySuccess(title, msg) {
     displayAlert(title, msg, color = '#39ba75', 'fa fa-check fa-lg');
 }
 
+function displayContainer() {
+    $(window).on("load", function () {
+        //Eliminate DOM Flicker
+        document.getElementById("container").style.display = "block";
+    });
+}
+
 function displayModalMessage(title, msg) {
 
     $('#modal-message').iziModal('resetContent');

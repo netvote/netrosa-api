@@ -31,9 +31,8 @@ function initFormUpload() {
         // transitionOut: 'fadeOutDown'
     });
 
-    // $('#modal').iziModal('resetContent');
-    $('#modal-uploadForm').iziModal('setTitle', "Upload XForm");
-    //$('#modal-settings').iziModal('setContent', `${msg}`);
+    $('#modal-uploadForm').iziModal('setTitle', "Upload Blank XForm");
+    $('#modal-uploadForm').iziModal('setIcon', 'fa fa-cloud-upload fa-lg');
 
     $("#modal-uploadForm").on('click', '.submit', function (event) {
         event.preventDefault();
@@ -196,16 +195,14 @@ function initSaveSettings() {
 
     $('#modal-settings').iziModal({
         // headerColor: '#26A69A',
-        // width: '85%',
         overlayColor: 'rgba(0, 0, 0, 0.5)',
         fullscreen: false,
         // transitionIn: 'fadeInUp',
         // transitionOut: 'fadeOutDown'
     });
 
-    // $('#modal').iziModal('resetContent');
     $('#modal-settings').iziModal('setTitle', "Server Settings");
-    //$('#modal-settings').iziModal('setContent', `${msg}`);
+    $('#modal-settings').iziModal('setIcon', 'fa fa-cogs fa-lg');
 
     $("#modal-settings").on('click', '.submit', function (event) {
         event.preventDefault();
