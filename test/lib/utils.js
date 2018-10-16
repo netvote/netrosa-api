@@ -18,44 +18,64 @@
 // ---------------------------------------------------------------------------------------------
 // Utility Functions 
 // ---------------------------------------------------------------------------------------------
-function initModal() {
-    // Get the modal
-    var modal = document.getElementById('Modal');
-
-    //Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    modal.style.display = "block";
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-}
-
-function displayModalMessage(title, msg, txtColor = 'lightblue') {
-    initModal();
-    modalresult.innerHTML = `<h2>${title}</h2><pre style="color: ${txtColor}">${msg}</pre></br>`;
-}
-
-function displayMessage(msg, color = 'lightgreen') {
-    initModal();
-    modalresult.innerHTML = `</br><pre style="text-align: center; color: ${color}">` + msg + '</pre></br></br>';
+function displayFooterURL(msg) {
+    footer.innerHTML = `<a href="${msg}" style="color:lightblue;">${msg}</a>`;
 }
 
 function displayError(msg) {
-    displayMessage(msg, 'red');
+    displayAlert('ERROR', msg, color = '#ed7474', 'fa fa-exclamation-circle fa-lg');
 }
 
-function displayFooterURL(msg) {
-    footer.innerHTML = `<a href="${msg}" style="color:lightblue;">${msg}</a>`;
+function displaySuccess(title, msg) {
+    displayAlert(title, msg, color = '#39ba75', 'fa fa-check fa-lg');
+}
+
+function displayModalMessage(title, msg) {
+
+    $('#modal-message').iziModal('resetContent');
+
+    $('#modal-message').iziModal({
+        // headerColor: '#26A69A',
+        width: '85%',
+        overlayColor: 'rgba(0, 0, 0, 0.5)',
+        fullscreen: true,
+        transitionIn: 'fadeInUp',
+        transitionOut: 'fadeOutDown'
+    });
+
+    // $('#modal').iziModal('resetContent');
+    $('#modal-message').iziModal('setTitle', `${title}`);
+    $('#modal-message').iziModal('setContent', `${msg}`);
+
+    $('#modal-message').iziModal('open');
+}
+
+function displayAlert(title, msg, color, icon) {
+
+    $('#modal-alert').iziModal('resetContent');
+
+    //alert
+    $('#modal-alert').iziModal({
+        // headerColor: '#d43838',
+        width: 400,
+        fullscreen: false,
+        timeout: 10000,
+        pauseOnHover: true,
+        timeoutProgressbar: true,
+        transitionIn: 'fadeInUp',
+        transitionOut: 'fadeOutDown'
+        // attached: 'bottom' 
+    });
+    
+    $('#modal-alert').iziModal('setIcon', `${icon}`);
+
+    $('#modal-alert').iziModal('setBackground', `${color}`);
+    $('#modal-alert').iziModal('setHeaderColor', `${color}`);
+    $('#modal-alert').iziModal('setTitle', `${title}`);
+    $('#modal-alert').iziModal('setSubtitle', `${msg}`);
+    // $('#modal-message').iziModal('setContent', `${msg}`);
+
+    $('#modal-alert').iziModal('open');
 }
 
 function outputXformsList(xformsList) {
@@ -124,15 +144,17 @@ function hideDropdown() {
 // Close the forms dropdown if the user clicks outside of it
 document.onclick = function (e) {
     if (!e.target.matches('.dropbtn')) {
+        
         var formsMenuContents = document.getElementById("formsMenuContents");
+
         if (formsMenuContents.classList.contains('show')) {
             formsMenuContents.classList.remove('show');
         }
     }
 }
 
-function clearAll() {
-    // Hide all navcontents by default
+// Hide all navcontents by default
+function clearAll() {  
     let i, navcontent;
 
     navcontent = document.getElementsByClassName("navcontent");
@@ -140,7 +162,4 @@ function clearAll() {
     for (i = 0; i < navcontent.length; i++) {
         navcontent[i].style.display = "none";
     }
-
-    //Clear form data
-    document.getElementById("xforms-upload-id").reset();
 }

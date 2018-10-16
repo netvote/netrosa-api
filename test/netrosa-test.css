@@ -14,6 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 body {
     background-color: rgb(40, 49, 61);
     background-image: url("./resources/splash.png");
@@ -33,24 +34,20 @@ body {
     color: rgb(97, 94, 138);
     text-align: center;
 }
+
 /* Icon Default Color */
 i {
     color: lightblue;
 }
 
 h4 {
-    color: rgb(172, 200, 228);
+    color: rgb(17, 56, 95);
     font-size: 14px;
 }
 
-h2 {
+/* h2 {
     color: rgb(255, 255, 255);
-}
-
-label {
-    color: rgb(172, 200, 228);
-    font-size: 14px;
-}
+} */
 
 pre {
     /* text-align: center; */
@@ -61,91 +58,84 @@ pre {
 xmp {
     white-space: pre-wrap;
     word-wrap: break-word;
+    color: rgb(54, 58, 63);
 }
 
 /* Style all input fields */
 
 input {
     /* width: 100%; */
-    color: rgb(171, 204, 223);
-    background-color: rgb(54, 58, 63);
+    color: rgb(14, 33, 97);
+    /* background-color: rgb(54, 58, 63); */
     padding: 6px;
-    border: 0.7px solid rgb(94, 89, 167);
+    border: 0.7px solid rgb(116, 110, 187);
     border-radius: 5px;
     box-sizing: border-box;
     margin-top: 5px;
-    /* margin-bottom: 20px; */
 }
 
-/* The Modal (background) */
-
-.modal {
-    display: none;
-    /* Hidden by default */
-    position: fixed;
-    /* Stay in place */
-    z-index: 1;
-    /* Sit on top */
-    padding-top: 100px;
-    /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
-    overflow: auto;
-    /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.4);
-    /* Black w/ opacity */
+.center {
+    padding: 40px 0;
+    text-align: center;
 }
 
-/* Modal Content */
-
-.modal-content {
-    background-color: rgb(40, 49, 61, 0.6);
-    /* w/ opacity */
-    margin: auto;
-    padding: 20px;
-    width: 80%;
-    max-width: 80%;
-    max-height: 80%;
-    overflow: auto;
+label {
+    color: rgb(1, 73, 145);
+    font-size: 14px;
 }
 
-/* The Close Button */
-
-.close {
-    color: #a30606;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+input::placeholder {
+    color: rgba(173, 169, 169, 0.527);
 }
 
-.close:hover, .close:focus {
-    color: #000;
+/* Buttons styles start */
+.button {
+    border-top: 1px solid #96d1f8;
+    background: #65a9d7;
+    background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+    background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
+    background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+    background: -ms-linear-gradient(top, #3e779d, #65a9d7);
+    background: -o-linear-gradient(top, #3e779d, #65a9d7);
+    padding: 7px 14px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+    -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+    box-shadow: rgba(0,0,0,1) 0 1px 0;
+    text-shadow: rgba(0,0,0,.4) 0 1px 0;
+    color: white;
+    font-size: 13px;
+    font-family: Helvetica, Arial, Sans-Serif;
     text-decoration: none;
-    cursor: pointer;
-}
+    vertical-align: middle;
+    }
+ .button:hover {
+    border-top-color: #28597a;
+    background: #28597a;
+    color: #ccc;
+    }
+ .button:active {
+    border-top-color: #1b435e;
+    background: #1b435e;
+    }
 
-/* Style the submit button */
+    input.button {
+        background-color: #660099;
+        color: white;
+        font-family: "trebuchet ms", arial, sans-serif;
+        border: 1px solid black;
+        font-style: italic;
+    }
+/* Button styles end */
 
-/* input[type=submit] {
-    background-color: #4CAF50;
-    color: rgb(49, 198, 209);
-} */
 
-fieldset {
-    border: 2px solid rgb(3, 82, 134)
-}
 
-legend {
-    padding: 0.2em 0.5em;
-    border: 1px solid rgb(3, 82, 134);
-    color: rgb(3, 82, 134);
-    font-size: 90%;
-    text-align: left;
-}
+
+
+
+
 
 .navbar {
     overflow: hidden;

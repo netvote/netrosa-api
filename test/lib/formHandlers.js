@@ -20,28 +20,40 @@
 // ODK Endpoint - formUpload
 // ---------------------------------------------------------------------------------------------
 function initFormUpload() {
-    var uploadBtn = document.getElementById('upload-button-id');
+    $('#modal-uploadForm').iziModal('resetContent');
 
-    uploadBtn.onclick = function () {
-        var fileInput = document.getElementById('file-id');
-        var file = fileInput.files[0];
+    $('#modal-uploadForm').iziModal({
+        // headerColor: '#26A69A',
+        // width: '85%',
+        overlayColor: 'rgba(0, 0, 0, 0.5)',
+        fullscreen: false,
+        // transitionIn: 'fadeInUp',
+        // transitionOut: 'fadeOutDown'
+    });
 
-        odk.uploadForm(file)
-            .then(data => {
-                //Raw XML
-                displayMessage(data);
+    // $('#modal').iziModal('resetContent');
+    $('#modal-uploadForm').iziModal('setTitle', "Upload XForm");
+    //$('#modal-settings').iziModal('setContent', `${msg}`);
 
-            }).catch(reason => {
-                displayError('ERROR: Fetch Failed - ' + reason.message);
-                console.log('Fetch Failed: ' + reason.message);
-            }).finally(() => {
-                //Clear form data
-                document.getElementById("xforms-upload-id").reset();
-            });
+    $("#modal-uploadForm").on('click', '.submit', function (event) {
+        event.preventDefault();
+        uploadFormAction();
+    });
+}
 
-        // Avoid normal form submission
-        return false;
-    }
+function uploadFormAction() {
+    $('#modal-uploadForm').iziModal('open');
+
+    var fileInput = document.getElementById('file-id');
+    var file = fileInput.files[0];
+
+    odk.uploadForm(file)
+        .then(data => {
+            displaySuccess("XForm Upload", data);
+        }).catch(reason => {
+            displayError('ERROR: Fetch Failed - ' + reason.message);
+            console.log('Fetch Failed: ' + reason.message);
+        });
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -104,47 +116,6 @@ function getFormList() {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Get Submissions List for a form (http://odk.netvote.io/view/submissionList)
-// ODK Endpoint - /view/submissionList
-// ---------------------------------------------------------------------------------------------
-function initGetSubFormList() {
-    var subsListBtn = document.getElementById('sublist-button-id');
-
-    subsListBtn.onclick = function () {
-        let submissionList = [{}];
-
-        odk.getSubmissionListById('mysurvey')
-            .then(data => {
-                //Raw XML
-                alert('Response data: ' + data);
-
-                displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
-
-                //TODO
-                //Convert to Array for easy manipulation 
-                //submissionList = getFormListObjects(data);
-
-                //TODO:
-                // 1 - Convert to list
-                // 2 - Add list to dropdown
-                // 3 - choose one, download/display submission data (api - downloadSubmission)
-
-                //Raw results
-                //displayMessage(`<pre><xmp>${data}</xmp></pre>`);
-                //  result.innerHTML = `<pre>${data}</pre>`;
-
-
-            }).catch(reason => {
-                displayError('ERROR:' + reason.message);
-                console.log('Fetch Failed: ' + reason.message);
-            });
-
-        // Avoid normal form submission
-        return false;
-    }
-}
-
-// ---------------------------------------------------------------------------------------------
 // Get an xForm by form Id (https://odk.netvote.io/formXml?formId=${formId})
 // ODK Endpoint - formId
 // ---------------------------------------------------------------------------------------------
@@ -153,9 +124,7 @@ function downloadXForm(xFormId) {
     odk.getFormById(xFormId)
         .then(data => {
             let url = odk.serverName + `/formXml?formId=${xFormId}`;
-            // let downloadLink = `<a href="${url}" style="color:white;">${xFormId}</a>`;
-
-            let downloadLink = `<h2><a href="${url}" style="color:white;"><i class="fa fa-file-code-o fa-lg" aria-hidden="true" style="color: white"></i></a> ${xFormId}</h2>`;
+            let downloadLink = `<h><a href="${url}" style="color:white;"><i class="fa fa-file-code-o fa-lg" aria-hidden="true" style="color: blue"></i></a> ${xFormId}</h>`;
 
             displayModalMessage(downloadLink, `<xmp>${data}</xmp>`);
         }).catch(reason => {
@@ -165,20 +134,87 @@ function downloadXForm(xFormId) {
 }
 
 // ---------------------------------------------------------------------------------------------
+// Generic ODK GET
+// ---------------------------------------------------------------------------------------------
+// odk.get('formXml?formId=mysurvey')
+//     .then(data => {
+//         //Raw XML
+//         document.write(`<h2>netRosa xForm</h2>`);
+//         document.write(`<pre><xmp>${data}</xmp></pre>`);
+//     }).catch(reason => {
+//         displayError('ERROR: Fetch Failed - ' + reason.message);
+//         console.log('Fetch Failed: ' + reason.message);
+//     });
+
+// ---------------------------------------------------------------------------------------------
+// Get Submissions List for a form (http://odk.netvote.io/view/submissionList)
+// ODK Endpoint - /view/submissionList
+// ---------------------------------------------------------------------------------------------
+// function initGetSubFormList() {
+//     var subsListBtn = document.getElementById('sublist-button-id');
+
+//     subsListBtn.onclick = function () {
+//         let submissionList = [{}];
+
+//         odk.getSubmissionListById('mysurvey')
+//             .then(data => {
+//                 //Raw XML
+//                 alert('Response data: ' + data);
+
+//                 // displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
+//                 displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
+
+//                 //TODO
+//                 //Convert to Array for easy manipulation 
+//                 //submissionList = getFormListObjects(data);
+
+//                 //TODO:
+//                 // 1 - Convert to list
+//                 // 2 - Add list to dropdown
+//                 // 3 - choose one, download/display submission data (api - downloadSubmission)
+
+//                 //Raw results
+//                 //displayMessage(`<pre><xmp>${data}</xmp></pre>`);
+//                 //  result.innerHTML = `<pre>${data}</pre>`;
+
+
+//             }).catch(reason => {
+//                 displayError('ERROR:' + reason.message);
+//                 console.log('Fetch Failed: ' + reason.message);
+//             });
+
+//         // Avoid normal form submission
+//         return false;
+//     }
+// }
+
+// ---------------------------------------------------------------------------------------------
 // Save/Update Aggregate Server Settings
 // ---------------------------------------------------------------------------------------------
 function initSaveSettings() {
-    var saveButton = document.getElementById("save-button-id");
+    $('#modal-settings').iziModal('resetContent');
 
-    saveButton.onclick = function () {
+    $('#modal-settings').iziModal({
+        // headerColor: '#26A69A',
+        // width: '85%',
+        overlayColor: 'rgba(0, 0, 0, 0.5)',
+        fullscreen: false,
+        // transitionIn: 'fadeInUp',
+        // transitionOut: 'fadeOutDown'
+    });
+
+    // $('#modal').iziModal('resetContent');
+    $('#modal-settings').iziModal('setTitle', "Server Settings");
+    //$('#modal-settings').iziModal('setContent', `${msg}`);
+
+    $("#modal-settings").on('click', '.submit', function (event) {
+        event.preventDefault();
         saveServerSettings();
-
-        // Avoid normal form submission
-        return false;
-    }
+    });
 }
 
 function saveServerSettings() {
+    $('#modal-settings').iziModal('open');
 
     let serverSettings = {
         username: document.getElementById("username").value,
@@ -193,9 +229,12 @@ function saveServerSettings() {
     odk = new NetRosa(serverSettings);
 
     //TODO: Save to session data
-    displayMessage('Settings saved');
+    displaySuccess("Settings", 'Server settings saved');
 }
 
+// ---------------------------------------------------------------------------------------------
+// Tabulator Table Filtering
+// ---------------------------------------------------------------------------------------------
 //custom max min header filter
 var minMaxFilterEditor = function (cell, onRendered, success, cancel, editorParams) {
 
@@ -272,16 +311,3 @@ function minMaxFilterFunction(headerValue, rowValue, rowData, filterParams) {
 
     return false; //must return a boolean, true if it passes the filter.
 }
-
-// ---------------------------------------------------------------------------------------------
-// Generic ODK GET
-// ---------------------------------------------------------------------------------------------
-// odk.get('formXml?formId=mysurvey')
-//     .then(data => {
-//         //Raw XML
-//         document.write(`<h2>netRosa xForm</h2>`);
-//         document.write(`<pre><xmp>${data}</xmp></pre>`);
-//     }).catch(reason => {
-//         displayError('ERROR: Fetch Failed - ' + reason.message);
-//         console.log('Fetch Failed: ' + reason.message);
-//     });
