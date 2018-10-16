@@ -27,8 +27,8 @@ function initFormUpload() {
         // width: '85%',
         overlayColor: 'rgba(0, 0, 0, 0.5)',
         fullscreen: false,
-        // transitionIn: 'fadeInUp',
-        // transitionOut: 'fadeOutDown'
+        transitionIn: 'flipInX',
+        transitionOut: 'flipOutX'
     });
 
     $('#modal-uploadForm').iziModal('setTitle', "Upload Blank XForm");
@@ -197,8 +197,8 @@ function initSaveSettings() {
         // headerColor: '#26A69A',
         overlayColor: 'rgba(0, 0, 0, 0.5)',
         fullscreen: false,
-        // transitionIn: 'fadeInUp',
-        // transitionOut: 'fadeOutDown'
+        transitionIn: 'flipInX',
+        transitionOut: 'flipOutX'
     });
 
     $('#modal-settings').iziModal('setTitle', "Server Settings");

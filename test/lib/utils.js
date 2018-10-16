@@ -69,8 +69,8 @@ function displayAlert(title, msg, color, icon) {
         timeout: 10000,
         pauseOnHover: true,
         timeoutProgressbar: true,
-        transitionIn: 'fadeInUp',
-        transitionOut: 'fadeOutDown'
+        transitionIn: 'bounceInDown',
+        transitionOut: 'bounceOutDown'
         // attached: 'bottom' 
     });
     
