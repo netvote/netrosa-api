@@ -206,3 +206,7 @@ input.button {
 .show {
     display: block;
 }
+.xforms-table {
+    position: relative;
+    top: 30px;
+}
