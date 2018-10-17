@@ -37,15 +37,23 @@ class NetRosa {
 
         this.odkRequest = async (path, method, postObj) => {
             let URL = this.server + "/" + path;
-            let encodedAuth = window.btoa(this.username + ":" + this.password); //base64
 
             let reqHeaders = new Headers();
             reqHeaders.append('X-OpenRosa-Version', '1.0');
             reqHeaders.append('Date', new Date().toUTCString());
 
+            //Add Authorization
+            if (this.username.length > 0 && this.password.length > 0) {
+                console.log('NOTICE: Adding Encoded Authorization to request...');
+
+                let encodedAuth = window.btoa(this.username + ":" + this.password); //base64
+                reqHeaders.append('Authorization', ("Basic " + encodedAuth));
+            } else {
+                console.log('NOTICE: Using Anonymous user for request...');
+            }
+
             if (method == 'GET') {
                 reqHeaders.append('Content-Type', 'text/xml; charset=utf-8');
-                reqHeaders.append('Authorization', ("Basic " + encodedAuth));
                 reqHeaders.append('Accept', 'application/json');
             }
 
@@ -100,7 +108,7 @@ class NetRosa {
             return this.odkRequest(SUBMISSION_PATH, 'POST', formData);
         };
     }
-    
+
     get serverName() {
         return this.server;
     }
