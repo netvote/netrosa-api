@@ -19,27 +19,6 @@
 // Upload an xForm file (http://odk.netvote.io/formUpload)
 // ODK Endpoint - formUpload
 // ---------------------------------------------------------------------------------------------
-function initFormUpload() {
-    $('#modal-uploadForm').iziModal('resetContent');
-
-    $('#modal-uploadForm').iziModal({
-        // headerColor: '#26A69A',
-        // width: '85%',
-        overlayColor: 'rgba(0, 0, 0, 0.5)',
-        fullscreen: false,
-        transitionIn: 'flipInX',
-        transitionOut: 'flipOutX'
-    });
-
-    $('#modal-uploadForm').iziModal('setTitle', "Upload Blank XForm");
-    $('#modal-uploadForm').iziModal('setIcon', 'fa fa-cloud-upload fa-lg');
-
-    $("#modal-uploadForm").on('click', '.submit', function (event) {
-        event.preventDefault();
-        uploadFormAction();
-    });
-}
-
 function uploadFormAction() {
     $('#modal-uploadForm').iziModal('open');
 
@@ -59,59 +38,50 @@ function uploadFormAction() {
 // Get list of xForms (http://odk.netvote.io/formList)
 // ODK Endpoint - formlist
 // ---------------------------------------------------------------------------------------------
-function getFormList() {
+function getFormListTable() {
     let xformList = [{}];
 
-    clearAll();
+    //Retrieve Forms as JSON Array
+    odk.getFormsData().then(xformList => {
 
-    odk.getFormsList()
-        .then(data => {
-            //Raw XML
-            // alert('Response data: ' + data);
+        //Generate Download Icon
+        var downloadIcon = function (cell, formatterParams) { //plain text value
+            return "<i class='fa fa-download'></i>";
+        };
 
-            //Convert to Array for easy manipulation
-            xformList = getFormListObjects(data);
-
-            //Raw results
-            // displayMessage(`<pre><xmp>${data}</xmp></pre>`);
-
-            //Generate Download Icon
-            var downloadIcon = function (cell, formatterParams) { //plain text value
-                return "<i class='fa fa-download'></i>";
-            };
-
-            var table = new Tabulator("#xforms-table", {
-                height: "100%",
-                // layout: "fitDataFill",
-                layout: "fitColumns",
-                pagination: "local",
-                paginationSize: 10,
-                tooltipsHeader: false,
-                placeholder: "No Forms Available", //display message to user on empty table
-                initialSort: [
-                    { column: "name", dir: "asc" },
-                ],
-                columns: [
-                    { formatter: downloadIcon, width: 10, align: "center", cellClick: function (e, cell) { downloadXForm(cell.getRow().getData().id); } },
-                    { title: "Name", field: "name", sorter: "string", headerFilter: "input" },
-                    { title: "Form Id", field: "id", sorter: "string", align: "left", headerFilter: "input" },
-                    { title: "Version", field: "version", sorter: "number", headerFilter: "input" },
-                ],
-                rowClick: function (e, id, data, row) {
-                    // alert("Row " + id + " Clicked!!!!")
-                },
-                rowContext: function (e, id, data, row) {
-                    // alert("Row " + id + " Context Clicked!!!!")
-                },
-            });
-
-            //load sample data into the table
-            table.setData(xformList);
-
-        }).catch(reason => {
-            displayError('ERROR: Fetch Failed - ' + reason.message);
-            console.log('Fetch Failed: ' + reason.message);
+        var table = new Tabulator("#xforms-table", {
+            height: "100%",
+            // layout: "fitDataFill",
+            layout: "fitColumns",
+            pagination: "local",
+            paginationSize: 10,
+            tooltipsHeader: false,
+            placeholder: "No Forms Available", //display message to user on empty table
+            initialSort: [
+                { column: "name", dir: "asc" },
+            ],
+            columns: [
+                { formatter: downloadIcon, width: 10, align: "center", cellClick: function (e, cell) { downloadXForm(cell.getRow().getData().id); } },
+                { title: "Name", field: "name", sorter: "string", headerFilter: "input" },
+                { title: "Form Id", field: "id", sorter: "string", align: "left", headerFilter: "input" },
+                { title: "Version", field: "version", sorter: "number", headerFilter: "input" },
+            ],
+            rowClick: function (e, id, data, row) {
+                // alert("Row " + id + " Clicked!!!!")
+            },
+            rowContext: function (e, id, data, row) {
+                // alert("Row " + id + " Context Clicked!!!!")
+            },
         });
+
+        //load sample data into the table
+        table.setData(xformList);
+
+    }).catch(reason => {
+        displayError(reason.message);
+        console.log(reason.message);
+    });
+
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -132,6 +102,73 @@ function downloadXForm(xFormId) {
         });
 }
 
+
+// ---------------------------------------------------------------------------------------------
+// Get Submissions List for a form (http://odk.netvote.io/view/submissionList)
+// ODK Endpoint - /view/submissionList
+// ---------------------------------------------------------------------------------------------
+//ON LOAD
+function loadSubsForm() {
+    let xformList = [{}];
+
+    //Retrieve Forms as JSON Array
+    odk.getFormsData().then(xformList => {
+
+        if (xformList.length > 0) {
+            let formsDropdownList = document.getElementById("xforms");
+
+            //Clear options
+            formsDropdownList.options.length = 0;
+
+            //Add Forms w/ id to Forms Dropdown
+            xformList.forEach(value => {
+                let option = document.createElement("option");
+                option.value = value.id;
+                option.text = value.name;
+                formsDropdownList.add(option);
+            });
+
+            $('#modal-viewSubmissions').iziModal('open');
+        } else {
+            throw new Error('ERROR: No XForms available');
+            console.log('NOTICE: No XForms available');
+        }
+    }).catch(reason => {
+        displayError(reason.message);
+        console.log(reason.message);
+    });
+}
+
+//ON SUBMIT
+function viewSubsAction() {
+
+    let formsDropdownList = document.getElementById("xforms");
+    var selFormName = formsDropdownList.options[formsDropdownList.selectedIndex].text;
+    var selFormId = formsDropdownList.options[formsDropdownList.selectedIndex].value;
+
+    odk.getSubmissionListById(selFormId)
+
+        .then(data => {
+            //Raw XML
+            displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
+
+            //TODO
+            //Convert to Array for easy manipulation 
+            //submissionList = getFormListObjects(data);
+
+            //TODO:
+            // 1 - Convert to list
+            // 3 - choose one, download/display submission data (api - downloadSubmission)
+
+            // GET the submission data aggregated and add to table
+            // odk.getSubmissionDataById(selFormId, "uuid:3132b6dd-983c-4c82-a855-aca42002fd29")  <-- GETS ACTUAL SUBMISSION DATA (1 submission)
+
+        }).catch(reason => {
+            displayError('ERROR:' + reason.message);
+            console.log('Fetch Failed: ' + reason.message);
+        });
+}
+
 // ---------------------------------------------------------------------------------------------
 // Generic ODK GET
 // ---------------------------------------------------------------------------------------------
@@ -145,47 +182,6 @@ function downloadXForm(xFormId) {
 //         console.log('Fetch Failed: ' + reason.message);
 //     });
 
-// ---------------------------------------------------------------------------------------------
-// Get Submissions List for a form (http://odk.netvote.io/view/submissionList)
-// ODK Endpoint - /view/submissionList
-// ---------------------------------------------------------------------------------------------
-// function initGetSubFormList() {
-//     var subsListBtn = document.getElementById('sublist-button-id');
-
-//     subsListBtn.onclick = function () {
-//         let submissionList = [{}];
-
-//         odk.getSubmissionListById('mysurvey')
-//             .then(data => {
-//                 //Raw XML
-//                 alert('Response data: ' + data);
-
-//                 // displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
-//                 displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
-
-//                 //TODO
-//                 //Convert to Array for easy manipulation 
-//                 //submissionList = getFormListObjects(data);
-
-//                 //TODO:
-//                 // 1 - Convert to list
-//                 // 2 - Add list to dropdown
-//                 // 3 - choose one, download/display submission data (api - downloadSubmission)
-
-//                 //Raw results
-//                 //displayMessage(`<pre><xmp>${data}</xmp></pre>`);
-//                 //  result.innerHTML = `<pre>${data}</pre>`;
-
-
-//             }).catch(reason => {
-//                 displayError('ERROR:' + reason.message);
-//                 console.log('Fetch Failed: ' + reason.message);
-//             });
-
-//         // Avoid normal form submission
-//         return false;
-//     }
-// }
 
 // ---------------------------------------------------------------------------------------------
 // Save/Update Aggregate Server Settings
@@ -227,6 +223,16 @@ function saveServerSettings() {
 
     //TODO: Save to session data
     displaySuccess("Settings", 'Server settings saved');
+}
+
+function outputXformsList(xformsList) {
+    let txt = '';
+    xformsList.forEach(value => {
+        txt += `${value.name}\nID: ${value.id}\n`;
+        txt += `<a href="${value.url}">Download Form</a></br></br>`;
+    });
+
+    displayModalMessage('CURRENT FORMS', txt);
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
             display: none;
         }
     </style>
-    <link rel="stylesheet" type="text/css" href="netrosa-test.css">
+    <link rel="stylesheet" type="text/css" href="./css/netrosa-test.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript" src="./lib/netrosa-odk-api.js"></script>
     <script type="text/javascript" src="./lib/utils.js"></script>
@@ -29,14 +29,26 @@
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content" id="formsMenuContents">
-            <a href="#" data-izimodal-open="#modal-uploadForm"><i class="fa fa-cloud-upload dropdown-icon fa-lg"></i> Upload
-                Blank XForm...</a>
-            <a href="#" onclick="getFormList()"><i class="fa fa-cloud-download dropdown-icon fa-lg"></i> View/Download XForms</a>
+            <a href="#" data-izimodal-open="#modal-uploadForm"><i class="fa fa-cloud-upload dropdown-icon"></i> Upload Blank XForm...</a>
+            <a href="#" onclick="getFormListTable()"><i class="fa fa-cloud-download dropdown-icon"></i> View/Download XForms</a>
         </div>
     </div>
+
+    <div class="dropdown">
+        <button class="dropbtn" onclick="hideSubsDropdown()" id="subsdropButton"><i class="fa fa-file-text fa-lg"></i>
+            Submissions
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content" id="subsMenuContents">
+            <a href="#" onclick="displayError('COMING SOON - NOT YET IMPLEMENTED!')"><i class="fa fa-cloud-upload dropdown-icon"></i> Upload Submission</a>
+            <!-- <a href="#" data-izimodal-open="#modal-viewSubmissions"><i class="fa fa-cloud-download dropdown-icon"></i> View Submissions</a> -->
+            <a href="#" onclick="loadSubsForm()"><i class="fa fa-cloud-download dropdown-icon"></i> View Submissions</a>
+            <!-- <a href="#" onclick="displayError('COMING SOON - NOT YET IMPLEMENTED!')"><i class="fa fa-cloud-download dropdown-icon"></i> View Submissions</a> -->
+        </div>
+    </div>
+
     <!-- <a href="#" onclick="openPage('Submissions')"><i class="fa fa-file-text fa-lg"></i> Submissions</a> -->
-    <a href="#" onclick="displayError('COMING SOON - NOT YET IMPLEMENTED!')"><i class="fa fa-file-text fa-lg"></i>
-        Submissions</a>
+
     <a href="#" style="float:right" data-izimodal-open="#modal-settings"><i class="fa fa-cog fa-lg"></i></a>
     </div>
 
@@ -72,15 +84,18 @@
             </section>
         </div>
 
-        <div id="modal-submissions" class="navcontent">
+        <div id="modal-viewSubmissions" class="navcontent">
             <section>
                 <div class="center">
-                    <h4>TODO - NOT IMPLEMENTED YET!</h4>
-                    <h4>Current ODK Submissions</h4>
-                    <!-- <input type="button" value="Get Submissions" id="sublist-button-id" /> -->
+                    <label for="xforms">Select an XForm: </label>
+                    <select for="xforms" id="xforms">
+                        <!-- <option>Form 1</option>
+                        <option>Form 2</option>
+                        <option>Form 3</option> -->
+                    </select>
                 </div>
-                <footer style="float:right;margin-bottom: 10px;width:70px;">
-                    <button class="submit button">Get</button>
+                <footer style="float:right;margin-bottom: 10px;width:80px;">
+                    <button class="submit button">Select</button>
                 </footer>
             </section>
         </div>
@@ -126,7 +141,8 @@
         // ---------------------------------------------------------------------------------------------
         // Setup/Initialize Form Listeners
         // ---------------------------------------------------------------------------------------------
-        initFormUpload();
+        initModal('modal-uploadForm', 'Upload Blank XForm', 'fa fa-cloud-upload fa-lg', uploadFormAction);
+        initModal('modal-viewSubmissions', 'View Form Submissions', 'fa fa-cloud-download fa-lg', viewSubsAction);
         initSaveSettings();
         displayContainer();
 

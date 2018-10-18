@@ -85,49 +85,6 @@ function displayAlert(title, msg, color, icon) {
     $('#modal-alert').iziModal('open');
 }
 
-function outputXformsList(xformsList) {
-    let txt = '';
-    xformsList.forEach(value => {
-        txt += `${value.name}\nID: ${value.id}\n`;
-        txt += `<a href="${value.url}">Download Form</a></br></br>`;
-    });
-
-    displayModalMessage('CURRENT FORMS', txt);
-}
-
-function getFormListObjects(xml) {
-    let parser = new DOMParser();
-    let xmlDoc = parser.parseFromString(xml, "text/xml");
-    let x = xmlDoc.getElementsByTagName('xform');
-    var xformList = [];
-
-    for (let i = 0; i < x.length; i++) {
-        let xform = {};
-
-        //Form ID
-        xform.id = x[i].children[0].textContent;
-
-        //Form Name
-        xform.name = x[i].children[1].textContent;
-
-        //MajorMinorVersion
-        xform.majminver = x[i].children[2].textContent;
-
-        //version
-        xform.version = x[i].children[3].textContent;
-
-        //hash
-        xform.hash = x[i].children[4].textContent;
-
-        //Download URL
-        xform.url = x[i].children[5].textContent;
-
-        xformList.push(xform);
-    }
-
-    return xformList;
-}
-
 function openPage(pageName) {
     // Hide all elements
     clearAll();
@@ -146,16 +103,34 @@ function openPage(pageName) {
 // toggle between hiding and showing the forms dropdown content
 function hideDropdown() {
     document.getElementById("formsMenuContents").classList.toggle("show");
+
+    hideDropdownElement("subsMenuContents");
+}
+
+// When the user clicks on the button, 
+// toggle between hiding and showing the forms dropdown content
+function hideSubsDropdown() {
+    document.getElementById("subsMenuContents").classList.toggle("show");
+
+    hideDropdownElement("formsMenuContents");
 }
 
 // Close the forms dropdown if the user clicks outside of it
 document.onclick = function (e) {
     if (!e.target.matches('.dropbtn')) {
-        
-        var formsMenuContents = document.getElementById("formsMenuContents");
+        hideDropdownElement("formsMenuContents");
+        hideDropdownElement("subsMenuContents");
+        // hideDropdown("subsMenuContents");
+    }
+}
 
-        if (formsMenuContents.classList.contains('show')) {
-            formsMenuContents.classList.remove('show');
+function hideDropdownElement(elementId) {
+    //Hide Submissions Dropdown
+    let menuContents = document.getElementById(elementId);
+
+    if (menuContents != null) {
+        if (menuContents.classList.contains('show')) {
+            menuContents.classList.remove('show');
         }
     }
 }
@@ -169,4 +144,25 @@ function clearAll() {
     for (i = 0; i < navcontent.length; i++) {
         navcontent[i].style.display = "none";
     }
+}
+
+function initModal(modalName, modalTitle, modalIcon, actionCallback) {
+    $(`#${modalName}`).iziModal('resetContent');
+
+    $(`#${modalName}`).iziModal({
+        // headerColor: '#26A69A',
+        // width: '85%',
+        overlayColor: 'rgba(0, 0, 0, 0.5)',
+        fullscreen: false,
+        transitionIn: 'flipInX',
+        transitionOut: 'flipOutX'
+    });
+
+    $(`#${modalName}`).iziModal('setTitle', modalTitle);
+    $(`#${modalName}`).iziModal('setIcon', modalIcon);
+
+    $(`#${modalName}`).on('click', '.submit', function (event) {
+        event.preventDefault();
+        actionCallback();
+    });
 }

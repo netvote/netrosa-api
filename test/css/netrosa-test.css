@@ -17,7 +17,7 @@
 
 body {
     background-color: rgb(40, 49, 61);
-    background-image: url("./resources/splash.png");
+    background-image: url("../resources/splash.png");
     background-repeat: no-repeat;
     background-position: 80% 10%;
     background-size: 100%;

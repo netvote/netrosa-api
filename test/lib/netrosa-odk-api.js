@@ -19,7 +19,9 @@
 const FORM_LIST_PATH = "formList";
 const FORM_UPLOAD_PATH = "formUpload";
 const SUBMISSION_LIST_PATH = "view/submissionList";
+const SUBMISSION_DOWNLOAD_PATH = "view/downloadSubmission";
 const SUBMISSION_PATH = "submission";
+
 
 // ---------------------------------------------------------------------------------------------
 // NetRosa - ODK Aggregate v1.0 API (OpenRosa 1.0 Compliant)
@@ -70,7 +72,8 @@ class NetRosa {
                 return await response.text();
             }
 
-            throw new Error(response.status);
+            throw new Error('ODK ERROR: Fetch Failed - ' + response.status);
+            console.log('ODK ERROR: Fetch Failed - ' + response.status);
         };
 
         this.get = (path) => {
@@ -102,11 +105,63 @@ class NetRosa {
             return this.odkRequest(formQuery, 'GET', null);
         };
 
+        this.getSubmissionDataById = (formId, key) => {
+            //TODO: FIX HARDCODED OPTIONS
+            let formQuery = `${SUBMISSION_DOWNLOAD_PATH}?formId=${formId}[@version=null and @uiVersion=null]/data[@key=${key}]`;
+            return this.odkRequest(formQuery, 'GET', null);
+        };
+
         this.uploadSubmissionForm = (xmlFile) => {
             var formData = new FormData();
             formData.append('form_def_file', xmlFile);
             return this.odkRequest(SUBMISSION_PATH, 'POST', formData);
         };
+
+        this.getFormListObjects = (xml) => {
+
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString(xml, "text/xml");
+            let x = xmlDoc.getElementsByTagName('xform');
+            var xformList = [];
+
+            for (let i = 0; i < x.length; i++) {
+                let xform = {};
+
+                //Form ID
+                xform.id = x[i].children[0].textContent;
+
+                //Form Name
+                xform.name = x[i].children[1].textContent;
+
+                //MajorMinorVersion
+                xform.majminver = x[i].children[2].textContent;
+
+                //version
+                xform.version = x[i].children[3].textContent;
+
+                //hash
+                xform.hash = x[i].children[4].textContent;
+
+                //Download URL
+                xform.url = x[i].children[5].textContent;
+
+                xformList.push(xform);
+            }
+
+            return xformList;
+        }
+
+        this.getFormsData = async () => {
+            let data = await odk.getFormsList()
+                .then(data => {
+                    return data;
+                }).catch(reason => {
+                    throw new Error('ODK ERROR: Fetch Failed - ' + reason.message);
+                    console.log('ODK Fetch Failed: ' + reason.message);
+                })
+
+            return this.getFormListObjects(data);
+        }
     }
 
     get serverName() {
