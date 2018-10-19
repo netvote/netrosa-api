@@ -146,27 +146,45 @@ function viewSubsAction() {
     var selFormName = formsDropdownList.options[formsDropdownList.selectedIndex].text;
     var selFormId = formsDropdownList.options[formsDropdownList.selectedIndex].value;
 
-    odk.getSubmissionListById(selFormId)
+    let submissionsList = [];
+    var promises = [];
 
-        .then(data => {
-            //Raw XML
-            displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
+    //Get list of submission ids 
+    odk.getSubmissionListById(selFormId).then(data => {
+        //Raw XML
+        displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
 
-            //TODO
-            //Convert to Array for easy manipulation 
-            //submissionList = getFormListObjects(data);
+        //Transform List of Submission Ids to array
+        let subIdList = odk.getSubsIdsList(data);
 
-            //TODO:
-            // 1 - Convert to list
-            // 3 - choose one, download/display submission data (api - downloadSubmission)
+        subIdList.forEach((subId) => {
+            //Fire off Submission Data Retrievals for each submission id
+            promises.push(odk.getSubmissionData(selFormId, subId).then(data => {
+               
+                console.log('SUBMISSION DATA: ' + JSON.stringify(data));
 
-            // GET the submission data aggregated and add to table
-            // odk.getSubmissionDataById(selFormId, "uuid:3132b6dd-983c-4c82-a855-aca42002fd29")  <-- GETS ACTUAL SUBMISSION DATA (1 submission)
-
-        }).catch(reason => {
-            displayError('ERROR:' + reason.message);
-            console.log('Fetch Failed: ' + reason.message);
+                //Add submission object to array
+                submissionsList.push(data);
+            }));
         });
+
+        //Got all submission data aggregated...
+        Promise.all(promises)
+            .then(data => {
+                console.log('AGGREGATED SUBMISSION DATA: ' + JSON.stringify(submissionsList));
+
+                //TODO --- DISPLAY SUBMISSIONS DATA IN TABLE IF THERE IS ANY DATA -- CHECK submissionsList
+
+
+            }).catch(reason => {
+                displayError('SUBMISSON DATA ERROR:' + reason.message);
+                console.log('Submission Data Fetch Failed: ' + reason.message);
+            });
+
+    }).catch(reason => {
+        displayError('ERROR:' + reason.message);
+        console.log('Fetch Failed: ' + reason.message);
+    });
 }
 
 // ---------------------------------------------------------------------------------------------

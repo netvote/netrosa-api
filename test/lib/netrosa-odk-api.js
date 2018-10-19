@@ -71,9 +71,8 @@ class NetRosa {
             if (response.ok) {
                 return await response.text();
             }
-
-            throw new Error('ODK ERROR: Fetch Failed - ' + response.status);
             console.log('ODK ERROR: Fetch Failed - ' + response.status);
+            throw new Error('ODK ERROR: Fetch Failed - ' + response.status);
         };
 
         this.get = (path) => {
@@ -151,16 +150,69 @@ class NetRosa {
             return xformList;
         }
 
+        this.getSubsIdsList = (xml) => {
+
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString(xml, "text/xml");
+            let x = xmlDoc.getElementsByTagName('id');
+            var subIdsList = [];
+
+            for (let i = 0; i < x.length; i++) {
+                subIdsList.push(x[i].textContent);
+            }
+
+            return subIdsList;
+        }
+
         this.getFormsData = async () => {
-            let data = await odk.getFormsList()
+            let data = await this.getFormsList()
                 .then(data => {
                     return data;
                 }).catch(reason => {
-                    throw new Error('ODK ERROR: Fetch Failed - ' + reason.message);
                     console.log('ODK Fetch Failed: ' + reason.message);
+                    throw new Error('ODK ERROR: Fetch Failed - ' + reason.message);
                 })
 
             return this.getFormListObjects(data);
+        }
+
+        this.getSubmissionDataObject = (xml) => {
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString(xml, "text/xml");
+            let x = xmlDoc.getElementsByTagName("data")[1].childNodes;
+            let subData = {};
+
+            //Submission Data
+            for (let i = 0; i < x.length; i++) {
+                subData[x[i].tagName] = x[i].textContent;
+            }
+
+            //Metadata Attributes
+            x = xmlDoc.getElementsByTagName("data");
+            let attributes = x[1].attributes;
+
+            for (let i=0; i< attributes.length; i++)
+            {
+                subData[attributes[i].nodeName] = attributes[i].textContent;
+            }
+
+            //Remove unnecessary attributes (eg: id, instanceid)
+            delete subData['id'];
+            delete subData['orx:meta'];
+            
+            return subData;
+        }
+
+        this.getSubmissionData = async (formId, subId) => {
+
+            let data = await this.getSubmissionDataById(formId, subId).then(data => {
+                return data;
+            }).catch(reason => {
+                console.log('ODK Fetch Failed: ' + reason.message);
+                throw new Error('ODK ERROR: Fetch Failed - ' + reason.message);
+            });
+
+            return this.getSubmissionDataObject(data);
         }
     }
 
