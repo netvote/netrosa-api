@@ -70,9 +70,10 @@ class NetRosa {
 
             if (response.ok) {
                 return await response.text();
+            } else {
+                console.log('ODK ERROR: Fetch Failed - ' + response.status);
+                throw new Error('ODK ERROR: Fetch Failed - ' + response.status);
             }
-            console.log('ODK ERROR: Fetch Failed - ' + response.status);
-            throw new Error('ODK ERROR: Fetch Failed - ' + response.status);
         };
 
         this.get = (path) => {

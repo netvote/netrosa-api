@@ -44,8 +44,20 @@ function getFormListTable() {
     //Retrieve Forms as JSON Array
     odk.getFormsData().then(xformList => {
 
+        //Generate Forms Table
+        generateFormsTable(xformList);
+
+    }).catch(reason => {
+        displayError(reason.message);
+        console.log(reason.message);
+    });
+
+}
+
+function generateFormsTable(xformList) {
+    if (xformList.length > 0) {
         //Generate Download Icon
-        var downloadIcon = function (cell, formatterParams) { //plain text value
+        var downloadIcon = function (cell, formatterParams) {
             return "<i class='fa fa-download'></i>";
         };
 
@@ -56,7 +68,7 @@ function getFormListTable() {
             pagination: "local",
             paginationSize: 10,
             tooltipsHeader: false,
-            placeholder: "No Forms Available", //display message to user on empty table
+            placeholder: "No Forms Available",
             initialSort: [
                 { column: "name", dir: "asc" },
             ],
@@ -74,14 +86,11 @@ function getFormListTable() {
             },
         });
 
-        //load sample data into the table
+        //load xforms data into the table
         table.setData(xformList);
-
-    }).catch(reason => {
-        displayError(reason.message);
-        console.log(reason.message);
-    });
-
+    } else {
+        displayError(`No forms currently available`);
+    }
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -142,6 +151,8 @@ function loadSubsForm() {
 //ON SUBMIT
 function viewSubsAction() {
 
+    $('#modal-viewSubmissions').iziModal('close');
+
     let formsDropdownList = document.getElementById("xforms");
     var selFormName = formsDropdownList.options[formsDropdownList.selectedIndex].text;
     var selFormId = formsDropdownList.options[formsDropdownList.selectedIndex].value;
@@ -152,7 +163,7 @@ function viewSubsAction() {
     //Get list of submission ids 
     odk.getSubmissionListById(selFormId).then(data => {
         //Raw XML
-        displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
+        // displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);
 
         //Transform List of Submission Ids to array
         let subIdList = odk.getSubsIdsList(data);
@@ -160,21 +171,21 @@ function viewSubsAction() {
         subIdList.forEach((subId) => {
             //Fire off Submission Data Retrievals for each submission id
             promises.push(odk.getSubmissionData(selFormId, subId).then(data => {
-               
-                console.log('SUBMISSION DATA: ' + JSON.stringify(data));
+
+                // console.log('SUBMISSION DATA: ' + JSON.stringify(data));
 
                 //Add submission object to array
                 submissionsList.push(data);
             }));
         });
 
-        //Got all submission data aggregated...
+        //All submission data aggregated...
         Promise.all(promises)
             .then(data => {
-                console.log('AGGREGATED SUBMISSION DATA: ' + JSON.stringify(submissionsList));
+                // console.log('AGGREGATED SUBMISSION DATA: ' + JSON.stringify(submissionsList));
 
-                //TODO --- DISPLAY SUBMISSIONS DATA IN TABLE IF THERE IS ANY DATA -- CHECK submissionsList
-
+                //Generate Submissions Table
+                generateSubmissionTable(selFormName, submissionsList);
 
             }).catch(reason => {
                 displayError('SUBMISSON DATA ERROR:' + reason.message);
@@ -185,6 +196,58 @@ function viewSubsAction() {
         displayError('ERROR:' + reason.message);
         console.log('Fetch Failed: ' + reason.message);
     });
+}
+
+function generateSubmissionTable(selFormName, submissionsList) {
+    if (submissionsList.length > 0) {
+        //Generate Export Icon
+        var exportIcon = function (cell, formatterParams) {
+            return "<i class='fa fa-file-excel-o'></i>";
+        };
+
+        var table = new Tabulator("#xforms-table", {
+            height: "100%",
+            // layout: "fitDataFill",
+            layout: "fitColumns",
+            pagination: "local",
+            paginationSize: 15,
+            tooltipsHeader: false,
+            placeholder: "No Submissions Available",
+            rowClick: function (e, id, data, row) {
+                // alert("Row " + id + " Clicked!!!!")
+            },
+            rowContext: function (e, id, data, row) {
+                // alert("Row " + id + " Context Clicked!!!!")
+            },
+            downloadComplete: function () {
+                displaySuccess("Export Submissions", `Form submissions exported to ${selFormName}.csv`);
+            },
+        });
+
+
+        //Add Export column
+        table.addColumn({
+            formatter: exportIcon, width: 10, align: "center", cellClick: function (e, cell) {
+                table.download("csv", `${selFormName}.csv`, { delimiter: "," });
+            }
+        });
+
+        //Add Columns to table based on submission data
+        let subsObj = submissionsList.values().next().value;
+
+        Object.keys(subsObj).forEach(key => {
+            // console.log(`Adding Column ${key}`);
+            table.addColumn({ title: `${key}`, field: `${key}`, sorter: "string", headerFilter: "input" });
+        });
+
+        //Initial Sort
+        table.setSort("submissionDate", "asc");
+
+        //load submission data into the table
+        table.setData(submissionsList);
+    } else {
+        displayError(`No Submissions available for ${selFormName}`);
+    }
 }
 
 // ---------------------------------------------------------------------------------------------
