@@ -35,6 +35,25 @@ function uploadFormAction() {
 }
 
 // ---------------------------------------------------------------------------------------------
+// Upload Submission (http://odk.netvote.io/submission)
+// ODK Endpoint - submission
+// ---------------------------------------------------------------------------------------------
+function uploadSubmissionAction() {
+    $('#modal-uploadSubmission').iziModal('open');
+
+    var fileInput = document.getElementById('sub-file-id');
+    var file = fileInput.files[0];
+
+    odk.uploadSubmissionForm(file)
+        .then(data => {
+            displaySuccess("Form Submission", data);
+        }).catch(reason => {
+            displayError('ERROR: Fetch Failed - ' + reason.message);
+            console.log('Fetch Failed: ' + reason.message);
+        });
+}
+
+// ---------------------------------------------------------------------------------------------
 // Get list of xForms (http://odk.netvote.io/formList)
 // ODK Endpoint - formlist
 // ---------------------------------------------------------------------------------------------
@@ -43,6 +62,8 @@ function getFormListTable() {
 
     //Retrieve Forms as JSON Array
     odk.getFormsData().then(xformList => {
+
+        // console.log('XFORM DATA: ' + JSON.stringify(xformList));
 
         //Generate Forms Table
         generateFormsTable(xformList);
@@ -160,7 +181,7 @@ function viewSubsAction() {
     let submissionsList = [];
     var promises = [];
 
-    //Get list of submission ids 
+    //Get list of submission keys
     odk.getSubmissionListById(selFormId).then(data => {
         //Raw XML
         // displayModalMessage('SUBMISSIONS', `<xmp>${data}</xmp>`);

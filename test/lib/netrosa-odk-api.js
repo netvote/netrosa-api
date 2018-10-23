@@ -113,7 +113,7 @@ class NetRosa {
 
         this.uploadSubmissionForm = (xmlFile) => {
             var formData = new FormData();
-            formData.append('form_def_file', xmlFile);
+            formData.append('xml_submission_file', xmlFile);
             return this.odkRequest(SUBMISSION_PATH, 'POST', formData);
         };
 

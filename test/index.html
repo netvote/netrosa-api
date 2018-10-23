@@ -40,7 +40,8 @@
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-content" id="subsMenuContents">
-            <a href="#" onclick="displayError('COMING SOON - NOT YET IMPLEMENTED!')"><i class="fa fa-cloud-upload dropdown-icon"></i> Upload Submission</a>
+            <!-- <a href="#" onclick="displayError('COMING SOON - NOT YET IMPLEMENTED!')"><i class="fa fa-cloud-upload dropdown-icon"></i> Upload Submission</a> -->
+            <a href="#" data-izimodal-open="#modal-uploadSubmission"><i class="fa fa-cloud-upload dropdown-icon"></i> Upload Submission...</a>
             <a href="#" onclick="loadSubsForm()"><i class="fa fa-cloud-download dropdown-icon"></i> View/Export Submissions</a>
         </div>
     </div>
@@ -75,6 +76,18 @@
                 <div class="center">
                     <h4>Upload New ODK XForm definition (xml file):</h4>
                     <input id="file-id" type="file" name="our-file" onfocus="this.value=''" />
+                </div>
+                <footer style="float:right;margin-bottom: 10px;width:80px;">
+                    <button class="submit button">Upload</button>
+                </footer>
+            </section>
+        </div>
+
+        <div id="modal-uploadSubmission" class="navcontent">
+            <section>
+                <div class="center">
+                    <h4>Upload Form Submission (xml file):</h4>
+                    <input id="sub-file-id" type="file" name="our-file" onfocus="this.value=''" />
                 </div>
                 <footer style="float:right;margin-bottom: 10px;width:80px;">
                     <button class="submit button">Upload</button>
@@ -137,6 +150,7 @@
         // Setup/Initialize Form Listeners
         // ---------------------------------------------------------------------------------------------
         initModal('modal-uploadForm', 'Upload Blank XForm', 'fa fa-cloud-upload fa-lg', uploadFormAction);
+        initModal('modal-uploadSubmission', 'Upload Submission', 'fa fa-cloud-upload fa-lg', uploadSubmissionAction);
         initModal('modal-viewSubmissions', 'View Form Submissions', 'fa fa-cloud-download fa-lg', viewSubsAction);
         initSaveSettings();
         displayContainer();

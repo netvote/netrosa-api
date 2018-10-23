@@ -1,0 +1,37 @@
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa">
+  <h:head><!-- ODK Aggregate upload time: 2018-10-14T23:07:58.685+0000 on http://odk.netvote.io -->
+    <h:title>KM Form 3</h:title>
+    <model>
+      <instance>
+        <data id="build_KM-Form-3_1539192264">
+          <meta>
+            <instanceID/>
+          </meta>
+          <Name/>
+          <Date/>
+        </data>
+      </instance>
+      <itext>
+        <translation lang="English">
+          <text id="/data/Name:label">
+            <value>Fullname</value>
+          </text>
+          <text id="/data/Date:label">
+            <value>Todays Date</value>
+          </text>
+        </translation>
+      </itext>
+      <bind nodeset="/data/meta/instanceID" type="string" readonly="true()" calculate="concat('uuid:', uuid())"/>
+      <bind nodeset="/data/Name" type="string" required="true()"/>
+      <bind nodeset="/data/Date" type="date"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/Name">
+      <label ref="jr:itext('/data/Name:label')"/>
+    </input>
+    <input ref="/data/Date">
+      <label ref="jr:itext('/data/Date:label')"/>
+    </input>
+  </h:body>
+</h:html>
