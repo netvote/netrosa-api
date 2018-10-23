@@ -15,7 +15,7 @@ An OpenRosa 1.0 Compliant web client which can:
 ### Specification Details:
 * OpenRosa - APIs for communicating with ODK servers (https://docs.opendatakit.org/openrosa/)
 * ODK XForms - a subset of the W3C XForms specification, for use in the ODK ecosystem (https://opendatakit.github.io/xforms-spec/)
-communication standards for moving blank forms and completed form instances between server applications 
+
 
 ### Test Application Usage
 ```
