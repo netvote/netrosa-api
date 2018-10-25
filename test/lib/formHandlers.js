@@ -301,11 +301,18 @@ function initSaveSettings() {
 
     $('#modal-settings').iziModal('setTitle', "Server Settings");
     $('#modal-settings').iziModal('setIcon', 'fa fa-cogs fa-lg');
+    
+    $('#modal-settings').iziModal('setSubtitle', 'You may leave these blank if your ODK server allows anonymous form management.');
 
     $("#modal-settings").on('click', '.submit', function (event) {
         event.preventDefault();
         saveServerSettings();
     });
+
+    //init values from session
+    document.getElementById("username").value = sessionStorage.getItem("server_username") || '';
+    document.getElementById("password").value = sessionStorage.getItem("server_password") || '';
+    document.getElementById("server").value = sessionStorage.getItem("server_url") || DEFAULT_ODK_SERVER;
 }
 
 function saveServerSettings() {
@@ -317,13 +324,8 @@ function saveServerSettings() {
         server: document.getElementById("server").value
     };
 
-    //Display Aggregate Server - footer
-    displayFooterURL(`${serverSettings.username} - ${serverSettings.password} - ${serverSettings.server}`);
+    configureNetRosa(serverSettings);
 
-    //Reconfigure NetRosa API 
-    odk = new NetRosa(serverSettings);
-
-    //TODO: Save to session data
     displaySuccess("Settings", 'Server settings saved');
 }
 
@@ -335,6 +337,21 @@ function outputXformsList(xformsList) {
     });
 
     displayModalMessage('CURRENT FORMS', txt);
+}
+
+function configureNetRosa(serverSettings) {
+
+    // Store session data
+    sessionStorage.clear();
+    sessionStorage.setItem("server_username", serverSettings.username || '');
+    sessionStorage.setItem("server_password", serverSettings.password || '');
+    sessionStorage.setItem("server_url", serverSettings.server || DEFAULT_ODK_SERVER);
+
+    //Display Aggregate Server - footer
+    displayFooterURL(`${sessionStorage.getItem("server_username")} @ ${sessionStorage.getItem("server_url")}`);
+
+    //Reconfigure NetRosa API 
+    odk = new NetRosa(serverSettings);
 }
 
 // ---------------------------------------------------------------------------------------------

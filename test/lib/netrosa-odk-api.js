@@ -22,6 +22,7 @@ const SUBMISSION_LIST_PATH = "view/submissionList";
 const SUBMISSION_DOWNLOAD_PATH = "view/downloadSubmission";
 const SUBMISSION_PATH = "submission";
 
+const DEFAULT_ODK_SERVER = 'http://odk.netvote.io';
 
 // ---------------------------------------------------------------------------------------------
 // NetRosa - ODK Aggregate v1.0 API (OpenRosa 1.0 Compliant)
@@ -33,9 +34,9 @@ const SUBMISSION_PATH = "submission";
 // ---------------------------------------------------------------------------------------------
 class NetRosa {
     constructor(settings) {
-        this.username = settings.username;
-        this.password = settings.password;
-        this.server = settings.server;
+        this.username = settings.username || '';
+        this.password = settings.password || '';
+        this.server = settings.server || DEFAULT_ODK_SERVER;
 
         this.odkRequest = async (path, method, postObj) => {
             let URL = this.server + "/" + path;
@@ -45,7 +46,7 @@ class NetRosa {
             reqHeaders.append('Date', new Date().toUTCString());
 
             //Add Authorization
-            if (this.username.length > 0 && this.password.length > 0) {
+            if ((this.username.length > 0) && (this.password.length > 0)) {
                 console.log('NOTICE: Adding Encoded Authorization to request...');
 
                 let encodedAuth = window.btoa(this.username + ":" + this.password); //base64

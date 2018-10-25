@@ -136,15 +136,14 @@
         // //      ODK Aggregate Instance URI
         // //
         // // ---------------------------------------------------------------------------------------------
-        // //ODK Default Settings
         let serverSettings = {
-            username: 'keith',
-            password: 'D@t@m@n18',
-            server: 'http://odk.netvote.io'
+            username: sessionStorage.getItem("server_username"),
+            password: sessionStorage.getItem("server_password"),
+            server: sessionStorage.getItem("server_url")
         };
 
         // //Instantiate NetRosa w/ ODK Default Settings
-        let odk = new NetRosa(serverSettings);
+        configureNetRosa(serverSettings);
 
         // ---------------------------------------------------------------------------------------------
         // Setup/Initialize Form Listeners
